@@ -36,10 +36,10 @@ export const Navbar = () => {
     <nav className="flex p-4 justify-between text-lg">
       <p className="font-bold"><Link href="/">Mokesell</Link></p>
       <div className="flex gap-4">
-        <Link href="/login">
-          <Button className="bg-transparent">Signup</Button>
-        </Link>
         <Link href="/signup">
+          <Button className="bg-transparent">Sign up</Button>
+        </Link>
+        <Link href="/login">
           <Button className="bg-blue-500">Login</Button>
         </Link>
 

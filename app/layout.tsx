@@ -14,11 +14,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="bg-gray-950 text-gray-50"
+      <body className="bg-gray-950 text-gray-50 flex flex-col min-h-screen"
       >
          <UserProvider>
            <Navbar/>
-           <main>
+           <main className="flex flex-1">
              {children}
            </main>
          </UserProvider>
