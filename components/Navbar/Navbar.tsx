@@ -1,9 +1,14 @@
+"use client";
+
 import Link from "next/link";
 import {Button} from "@/components/ui/button";
 import {MessageCircle, User} from "lucide-react";
+import {useContext} from "react";
+import {UserContext} from "@/providers/UserProvider";
 
-export const Navbar = (props: {isLoggedIn: boolean}) => {
-  if (props.isLoggedIn) {
+export const Navbar = () => {
+  const user = useContext(UserContext)
+  if (user) {
     return (
       <nav className="flex p-4 justify-between text-lg">
       <p className="font-bold text-lg"><Link href="/">Mokesell</Link></p>
