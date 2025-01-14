@@ -1,0 +1,44 @@
+import Link from "next/link";
+import {Button} from "@/components/ui/button";
+import {MessageCircle, User} from "lucide-react";
+
+export const Navbar = (props: {isLoggedIn: boolean}) => {
+  if (props.isLoggedIn) {
+    return (
+      <nav className="flex p-4 justify-between text-lg">
+      <p className="font-bold text-lg"><Link href="/">Mokesell</Link></p>
+      <div className="flex gap-4">
+        <Link href="/">
+          <Button className="bg-transparent">Sell</Button>
+        </Link>
+        <Link href="/user">
+          <Button className="bg-blue-transparent">
+            <User/>
+            <p className="sr-only">User</p>
+          </Button>
+        </Link>
+        <Link href="/chats">
+          <Button className="bg-blue-transparent">
+            <MessageCircle/>
+            <p className="sr-only">Chat</p>
+          </Button>
+        </Link>
+      </div>
+    </nav>
+    )
+  }
+  return (
+    <nav className="flex p-4 justify-between text-lg">
+      <p className="font-bold"><Link href="/">Mokesell</Link></p>
+      <div className="flex gap-4">
+        <Link href="/login">
+          <Button className="bg-transparent">Signup</Button>
+        </Link>
+        <Link href="/signup">
+          <Button className="bg-blue-500">Login</Button>
+        </Link>
+
+      </div>
+    </nav>
+  )
+}
