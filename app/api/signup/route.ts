@@ -5,7 +5,7 @@ import {usersTable} from "@/db/schema";
 import bcrypt from "bcrypt";
 import {SignJWT} from "jose";
 
-export const POST = async (request: Request) => {
+export const POST = async (request: Request): Promise<Response> => {
   const req: z.infer<typeof signUpSchema> = await request.json();
   const error = (body: string | null) => {
     return new Response(body, {
@@ -13,7 +13,7 @@ export const POST = async (request: Request) => {
     })
   }
   if (!signUpSchema.safeParse(req).success) {
-    return error;
+    return error(null);
   }
 
   const hashPassword = await bcrypt.hash(req.password, 12);
