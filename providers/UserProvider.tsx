@@ -1,29 +1,42 @@
 "use client";
 
-import {createContext, ReactNode} from "react";
+import {
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 
 interface User {
-  username: string,
-  name: string
-  email: string
-  description: string
-  token: string
+  username: string;
+  name: string;
+  email: string;
+  description: string; // bio in profile
 }
 
-export const UserContext = createContext<User | null>(null);
+export const UserContext = createContext<
+  [User | undefined, Dispatch<SetStateAction<User | undefined>> | undefined]
+>([undefined, undefined]);
 
-export const UserProvider = (props: {children: ReactNode}) => {
-  if (typeof localStorage === "undefined") return;
-  const userData = localStorage.getItem("user")
-  let user: User | null;
-  if (!userData) {
-    user = null;
-  } else {
-    user = JSON.parse(userData)
-  }
+export const UserProvider = (props: { children: ReactNode }) => {
+  const [user, setUser] = useState<User | undefined>(undefined);
+
+  useEffect(() => {
+    if (typeof localStorage !== "undefined") {
+      const userData = localStorage.getItem("user");
+      if (userData) {
+        setUser(JSON.parse(userData));
+      } else {
+        setUser(undefined);
+      }
+    }
+  }, []);
+
   return (
-    <UserContext value={user}>
+    <UserContext.Provider value={[user, setUser]}>
       {props.children}
-    </UserContext>
-  )
-}
+    </UserContext.Provider>
+  );
+};

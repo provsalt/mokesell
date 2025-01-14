@@ -7,7 +7,7 @@ import {useContext} from "react";
 import {UserContext} from "@/providers/UserProvider";
 
 export const Navbar = () => {
-  const user = useContext(UserContext)
+  const [user, ] = useContext(UserContext)
   if (user) {
     return (
       <nav className="flex p-4 justify-between text-lg">

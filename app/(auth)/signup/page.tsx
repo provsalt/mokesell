@@ -7,13 +7,38 @@ import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, Form
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {signUpSchema} from "@/lib/schemas";
+import {useContext} from "react";
+import {UserContext} from "@/providers/UserProvider";
+import {useRouter} from "next/navigation";
 
 const Signup = () => {
+  const [user, setUser] = useContext(UserContext);
+  const { push } = useRouter();
   const handleSubmit = (values: z.infer<typeof signUpSchema>) => {
-    console.log(values)
     fetch("/api/signup", {
       body: JSON.stringify(values),
       method: "POST"
+    }).then(r => {
+      console.log(r)
+      if (r.status === 200) {
+        if (setUser) {
+          setUser({
+            name: values.name,
+            email: values.email,
+            username: values.username,
+            description: "",
+          })
+        }
+        if (typeof localStorage === "undefined") return;
+        // since setState is async, to prevent race condition, not using users const
+        localStorage.setItem("user", JSON.stringify({
+          name: values.name,
+          email: values.email,
+          username: values.username,
+          description: ""
+        }))
+        push("/")
+      }
     })
   }
 
@@ -21,6 +46,7 @@ const Signup = () => {
     resolver: zodResolver(signUpSchema),
     defaultValues: {
       username: "",
+      name: "",
       email: "",
       password: "",
     },
@@ -32,14 +58,15 @@ const Signup = () => {
         <p className="mb-4 text-lg">Welcome to Mokesell</p>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col gap-4">
+
             <FormField
               control={form.control}
-              name="username"
+              name="name"
               render={({field}) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="johndoe" {...field} />
+                    <Input placeholder="John Doe" {...field} />
                   </FormControl>
                   <FormDescription>
                     This is your public display name.
@@ -48,6 +75,19 @@ const Signup = () => {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="username"
+              render={({field}) => (
+              <FormItem>
+                <FormLabel>Username</FormLabel>
+                <FormControl>
+                  <Input placeholder="johndoe" {...field} />
+                </FormControl>
+                <FormMessage/>
+              </FormItem>
+            )}
+              />
 
             <FormField
               control={form.control}
