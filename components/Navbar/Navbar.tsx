@@ -2,12 +2,21 @@
 
 import Link from "next/link";
 import {Button} from "@/components/ui/button";
-import {MessageCircle, User} from "lucide-react";
+import {LogOut, MessageCircle, User} from "lucide-react";
 import {useContext} from "react";
 import {UserContext} from "@/providers/UserProvider";
 
 export const Navbar = () => {
-  const [user, ] = useContext(UserContext)
+  const [user, setUser ] = useContext(UserContext)
+
+  const logout = () => {
+    if (setUser) {
+      setUser(undefined)
+      if (typeof localStorage === "undefined") return;
+      localStorage.removeItem("user")
+    }
+  }
+
   if (user) {
     return (
       <nav className="flex p-4 justify-between text-lg">
@@ -17,17 +26,21 @@ export const Navbar = () => {
           <Button className="bg-transparent">Sell</Button>
         </Link>
         <Link href="/user">
-          <Button className="bg-blue-transparent">
+          <Button className="bg-transparent">
             <User/>
             <p className="sr-only">User</p>
           </Button>
         </Link>
         <Link href="/chats">
-          <Button className="bg-blue-transparent">
+          <Button className="bg-transparent">
             <MessageCircle/>
             <p className="sr-only">Chat</p>
           </Button>
         </Link>
+        <Button onClick={logout} className="bg-transparent">
+          <LogOut/>
+          <p className="sr-only">Logout</p>
+        </Button>
       </div>
     </nav>
     )

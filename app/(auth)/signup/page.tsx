@@ -12,7 +12,7 @@ import {UserContext} from "@/providers/UserProvider";
 import {useRouter} from "next/navigation";
 
 const Signup = () => {
-  const [user, setUser] = useContext(UserContext);
+  const [, setUser] = useContext(UserContext);
   const { push } = useRouter();
   const handleSubmit = (values: z.infer<typeof signUpSchema>) => {
     fetch("/api/signup", {
