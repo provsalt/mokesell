@@ -38,7 +38,7 @@ export const POST = async (request: Request): Promise<Response> => {
     sub: req.username,
     name: req.name
   })
-    .setProtectedHeader({ alg: "HS256" })
+    .setProtectedHeader({alg: "HS256"})
     .setExpirationTime("1d")
     .sign(secret);
   return new Response(null, {

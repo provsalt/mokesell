@@ -13,7 +13,7 @@ import {useRouter} from "next/navigation";
 
 const Signup = () => {
   const [, setUser] = useContext(UserContext);
-  const { push } = useRouter();
+  const {push} = useRouter();
   const handleSubmit = (values: z.infer<typeof signUpSchema>) => {
     fetch("/api/signup", {
       body: JSON.stringify(values),
@@ -79,15 +79,15 @@ const Signup = () => {
               control={form.control}
               name="username"
               render={({field}) => (
-              <FormItem>
-                <FormLabel>Username</FormLabel>
-                <FormControl>
-                  <Input placeholder="johndoe" {...field} />
-                </FormControl>
-                <FormMessage/>
-              </FormItem>
-            )}
-              />
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input placeholder="johndoe" {...field} />
+                  </FormControl>
+                  <FormMessage/>
+                </FormItem>
+              )}
+            />
 
             <FormField
               control={form.control}

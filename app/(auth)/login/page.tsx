@@ -6,14 +6,14 @@ import {useForm} from "react-hook-form";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
-import {loginSchema, signUpSchema} from "@/lib/schemas";
+import {loginSchema} from "@/lib/schemas";
 import {useContext} from "react";
 import {UserContext} from "@/providers/UserProvider";
 import {useRouter} from "next/navigation";
 
 const Login = () => {
   const [, setUser] = useContext(UserContext);
-  const { push } = useRouter();
+  const {push} = useRouter();
   const handleSubmit = (values: z.infer<typeof loginSchema>) => {
     console.log("Clicked")
     fetch("/api/login", {

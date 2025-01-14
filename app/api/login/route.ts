@@ -1,5 +1,5 @@
 import {z} from "zod";
-import {loginSchema, signUpSchema} from "@/lib/schemas";
+import {loginSchema} from "@/lib/schemas";
 import {db} from "@/db";
 import {usersTable} from "@/db/schema";
 import bcrypt from "bcrypt";
@@ -20,7 +20,9 @@ export const POST = async (request: Request): Promise<Response> => {
 
   try {
     const data = await db.query.usersTable.findFirst({
-      where: sql`${usersTable.email} = ${req.email}`
+      where: sql`${usersTable.email}
+      =
+      ${req.email}`
     })
     if (!data) {
       // hide debug info, use generic error
@@ -35,7 +37,7 @@ export const POST = async (request: Request): Promise<Response> => {
       sub: data.username,
       name: data.name
     })
-      .setProtectedHeader({ alg: "HS256" })
+      .setProtectedHeader({alg: "HS256"})
       .setExpirationTime("1d")
       .sign(secret);
     return new Response(JSON.stringify({
