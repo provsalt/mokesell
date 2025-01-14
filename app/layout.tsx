@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import {Navbar} from "@/components/Navbar/Navbar";
-import {UserContext, UserProvider} from "@/providers/UserProvider";
+import {UserProvider} from "@/providers/UserProvider";
 
 export const metadata: Metadata = {
   title: "Mokesell",
