@@ -11,6 +11,10 @@ import {signUpSchema} from "@/lib/schemas";
 const Signup = () => {
   const handleSubmit = (values: z.infer<typeof signUpSchema>) => {
     console.log(values)
+    fetch("/api/signup", {
+      body: JSON.stringify(values),
+      method: "POST"
+    })
   }
 
   const form = useForm<z.infer<typeof signUpSchema>>({
@@ -65,7 +69,7 @@ const Signup = () => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input placeholder="********" {...field} />
+                    <Input type="password" placeholder="********" {...field} />
                   </FormControl>
                   <FormMessage/>
                 </FormItem>
