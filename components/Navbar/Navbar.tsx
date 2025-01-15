@@ -3,10 +3,11 @@
 import Link from "next/link";
 import {Button} from "@/components/ui/button";
 import {LogOut, MessageCircle, User} from "lucide-react";
-import {useContext} from "react";
+import {ComponentPropsWithoutRef, useContext} from "react";
 import {UserContext} from "@/providers/UserProvider";
+import {twMerge} from "tailwind-merge";
 
-export const Navbar = () => {
+export const Navbar = (props: ComponentPropsWithoutRef<'nav'>) => {
   const [user, setUser ] = useContext(UserContext)
 
   const logout = () => {
