@@ -6,6 +6,73 @@ import bcrypt from "bcrypt";
 import {SignJWT} from "jose";
 import {sql} from "drizzle-orm";
 
+/**
+ * @swagger
+ * /api/login:
+ *   post:
+ *     summary: Authenticate a user and return a JWT token.
+ *     description: Authenticates a user by validating their email and password. If successful, returns a JWT token and user details.
+ *     produces:
+ *       - application/json
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: The user's email address.
+ *                 example: user@example.com
+ *               password:
+ *                 type: string
+ *                 description: The user's password.
+ *                 example: password123
+ *     responses:
+ *       200:
+ *         description: Successfully authenticated the user. Returns user details and sets a JWT token in a cookie.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     username:
+ *                       type: string
+ *                       description: The username of the authenticated user.
+ *                     name:
+ *                       type: string
+ *                       description: The name of the authenticated user.
+ *                     email:
+ *                       type: string
+ *                       description: The email of the authenticated user.
+ *                     description:
+ *                       type: string
+ *                       description: A description or bio of the authenticated user.
+ *         headers:
+ *           Set-Cookie:
+ *             schema:
+ *               type: string
+ *               description: JWT token stored in an HttpOnly, Secure, and SameSite=Strict cookie.
+ *               example: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...; path=/; HttpOnly; SameSite=Strict; Secure;
+ *       422:
+ *         description: Authentication failed due to invalid input, incorrect email, or incorrect password.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Error
+ */
+
 export const POST = async (request: Request): Promise<Response> => {
   const req: z.infer<typeof loginSchema> = await request.json();
   const error = (body: string | null) => {
