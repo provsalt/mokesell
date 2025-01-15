@@ -11,6 +11,7 @@ import {SignJWT} from "jose";
  *   post:
  *     summary: Register a new user and return a JWT token.
  *     description: Registers a new user by validating their input, hashing their password, and storing their details in the database. If successful, returns a JWT token.
+ *     tags: [Auth]
  *     produces:
  *       - application/json
  *     requestBody:
