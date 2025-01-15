@@ -3,11 +3,10 @@
 import Link from "next/link";
 import {Button} from "@/components/ui/button";
 import {LogOut, MessageCircle, User} from "lucide-react";
-import {ComponentPropsWithoutRef, useContext} from "react";
+import {useContext} from "react";
 import {UserContext} from "@/providers/UserProvider";
-import {twMerge} from "tailwind-merge";
 
-export const Navbar = (props: ComponentPropsWithoutRef<'nav'>) => {
+export const Navbar = () => {
   const [user, setUser ] = useContext(UserContext)
 
   const logout = () => {
@@ -51,7 +50,7 @@ export const Navbar = (props: ComponentPropsWithoutRef<'nav'>) => {
       <p className="font-bold"><Link href="/">Mokesell</Link></p>
       <div className="flex gap-4">
         <Link href="/signup">
-          <Button className="bg-transparent">Sign up</Button>
+          <Button className="bg-transparent text-gray-950 dark:text-gray-50">Sign up</Button>
         </Link>
         <Link href="/login">
           <Button className="bg-blue-500">Login</Button>

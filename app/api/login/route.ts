@@ -12,6 +12,7 @@ import {sql} from "drizzle-orm";
  *   post:
  *     summary: Authenticate a user and return a JWT token.
  *     description: Authenticates a user by validating their email and password. If successful, returns a JWT token and user details.
+ *     tags: [Auth]
  *     produces:
  *       - application/json
  *     requestBody:
