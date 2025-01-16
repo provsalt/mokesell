@@ -23,21 +23,21 @@ export const Navbar = () => {
       <p className="font-bold text-lg"><Link href="/">Mokesell</Link></p>
       <div className="flex gap-4">
         <Link href="/">
-          <Button className="bg-transparent">Sell</Button>
+          <Button className="dark:bg-transparent">Sell</Button>
         </Link>
         <Link href="/user">
-          <Button className="bg-transparent">
+          <Button className="dark:bg-transparent">
             <User/>
             <p className="sr-only">User</p>
           </Button>
         </Link>
         <Link href="/chats">
-          <Button className="bg-transparent">
+          <Button className="dark:bg-transparent">
             <MessageCircle/>
             <p className="sr-only">Chat</p>
           </Button>
         </Link>
-        <Button onClick={logout} className="bg-transparent">
+        <Button onClick={logout} className="dark:bg-transparent">
           <LogOut/>
           <p className="sr-only">Logout</p>
         </Button>
@@ -50,7 +50,7 @@ export const Navbar = () => {
       <p className="font-bold"><Link href="/">Mokesell</Link></p>
       <div className="flex gap-4">
         <Link href="/signup">
-          <Button className="bg-transparent text-gray-950 dark:text-gray-50">Sign up</Button>
+          <Button className="dark:bg-transparent text-gray-50 dark:text-gray-50">Sign up</Button>
         </Link>
         <Link href="/login">
           <Button className="bg-blue-500">Login</Button>
