@@ -21,14 +21,14 @@ export const Navbar = () => {
     return (
       <nav className="flex p-4 justify-between text-lg">
       <p className="font-bold text-lg"><Link href="/">Mokesell</Link></p>
-      <div className="flex gap-4">
+      <div className="flex gap-2">
         <Link href="/">
           <Button className="dark:bg-transparent">Sell</Button>
         </Link>
         <Link href="/user">
           <Button className="dark:bg-transparent">
             <User/>
-            <p className="sr-only">User</p>
+            <p>Hi {user.name}</p>
           </Button>
         </Link>
         <Link href="/chats">
