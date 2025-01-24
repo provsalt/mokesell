@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import {ListingCard} from "@/components/Listing/ListingCard";
 
 export default function Home() {
   const categories = ["Bikes", "Phones", "Tables", "Plants", "Lego"];
@@ -32,17 +33,6 @@ export default function Home() {
       setActiveCategory(category);
     }
   };
-
-  const renderBox = (item: { name: string; price: string; condition: string }) => (
-    <div className="space-y-2">
-      <div className="aspect-square bg-gray-200 rounded-lg"></div>
-      <div className="text-sm space-y-1">
-        <p className="text-gray-600">{item.name}</p>
-        <p className="font-medium">{item.price}</p>
-        <p className="text-gray-500">{item.condition}</p>
-      </div>
-    </div>
-  );
 
   const renderPlaceholderBoxes = (count: number) =>
     Array(count)
@@ -89,7 +79,9 @@ export default function Home() {
         </div>
         <div className="grid grid-cols-5 gap-6">
           {filteredItems.map((item, i) => (
-            <div key={i}>{renderBox(item)}</div>
+            <div key={i}>
+              <ListingCard name={item.name} price={item.price} condition={item.condition} />
+            </div>
           ))}
         </div>
       </div>
@@ -103,7 +95,9 @@ export default function Home() {
         </div>
         <div className="grid grid-cols-5 gap-6">
           {nearYouItems.map((item, i) => (
-            <div key={i}>{renderBox(item)}</div>
+            <div key={i}>{
+              <ListingCard name={item.name} price={item.price} condition={item.condition} />
+            }</div>
           ))}
         </div>
       </div>
