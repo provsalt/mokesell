@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-export const ListingCard = (props: { name?: string, price?: string; condition?: string, imageSource: string } ) => {
+export const ListingCard = (props: { name?: string, price?: string; condition?: string, imageSource?: string } ) => {
   if (!props || !props.name || !props.price || !props.condition || !props.imageSource) {
     return (
       <div className="space-y-2">
