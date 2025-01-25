@@ -30,6 +30,16 @@ export const listingsTable = pgTable("listings", {
     .notNull(),
 });
 
+export const imagesTable = pgTable("images", {
+  id: serial().primaryKey(),
+  url: varchar({ length: 512 }).notNull(),
+  position: integer().notNull().default(1),
+  listingId: integer()
+    .references(() => listingsTable.id, { onDelete: "cascade" }) // TODO: remember to delete in s3 or im gonna go broke
+    .notNull(),
+  createdAt: timestamp().notNull().defaultNow(),
+});
+
 export const messagesTable = pgTable("messages", {
   id: serial().primaryKey(),
   content: text().notNull(),
