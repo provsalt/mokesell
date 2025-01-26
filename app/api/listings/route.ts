@@ -1,10 +1,11 @@
 import { z } from "zod";
 import { db } from "@/db";
-import { listingsTable, categoriesTable } from "@/db/schema";
-import { eq, and, gte, lte, desc } from "drizzle-orm";
+import {listingsTable, categoriesTable, imagesTable} from "@/db/schema";
+import {eq, and, gte, lte, desc, sql} from "drizzle-orm";
 import { NextResponse } from "next/server";
 import {cookies} from "next/headers";
 import {getJWTUser} from "@/lib/auth";
+import {uploadToS3} from "@/lib/s3";
 
 const createListingSchema = z.object({
   title: z.string().min(1),
@@ -13,8 +14,8 @@ const createListingSchema = z.object({
   condition: z.enum(["new", "like_new", "used", "heavily used"]),
   categoryId: z.number().int().positive(),
   deliveryCost: z.string().regex(/^\d+(\.\d{1,2})?$/).optional(),
+  images: z.array(z.instanceof(File)).optional(),
 });
-
 
 /**
  * @swagger
@@ -45,11 +46,38 @@ const createListingSchema = z.object({
  *           example: "used"
  *         categoryId:
  *           type: integer
- *           example: 2
  *         deliveryCost:
  *           type: string
  *           pattern: ^\d+(\.\d{1,2})?$
  *           example: "10.00"
+ *         images:
+ *           type: array
+ *           items:
+ *             type: string
+ *             format: binary
+ *           description: Array of image files (max 10 images)
+ *
+ *     ListingResponse:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *         title:
+ *           type: string
+ *         description:
+ *           type: string
+ *         price:
+ *           type: string
+ *         condition:
+ *           type: string
+ *         images:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               url:
+ *                 type: string
+ *
  */
 
 /**
@@ -61,26 +89,45 @@ const createListingSchema = z.object({
  *     security:
  *       - cookieAuth: []
  *     requestBody:
- *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             $ref: '#/components/schemas/CreateListing'
  *     responses:
  *       201:
- *         description: Listing created successfully
+ *         description: Listing created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ListingResponse'
  *       401:
  *         description: Unauthorized
  *       422:
  *         description: Validation error
  */
+
 export async function POST(request: Request) {
   const user = await getJWTUser(await cookies());
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
-    const body = await request.json();
-    const validation = createListingSchema.safeParse(body);
+    const formData = await request.formData();
+
+    const body = {
+      title: formData.get('title'),
+      description: formData.get('description'),
+      price: formData.get('price'),
+      condition: formData.get('condition'),
+      categoryId: Number(formData.get('categoryId')),
+      deliveryCost: formData.get('deliveryCost'),
+      images: formData.getAll('images')
+    };
+
+    const validation = createListingSchema.safeParse({
+      ...body,
+      images: formData.getAll('images'),
+    });
+
     if (!validation.success) {
       return NextResponse.json({ error: validation.error.errors }, { status: 422 });
     }
@@ -89,11 +136,24 @@ export async function POST(request: Request) {
     const category = await db.query.categoriesTable.findFirst({ where: eq(categoriesTable.id, categoryId) });
     if (!category) return NextResponse.json({ error: "Category not found" }, { status: 400 });
 
+    const imageFiles = formData.getAll('images') as File[];
+    const imageUrls = await Promise.all(
+      imageFiles.map(file => uploadToS3(file))
+    );
+
     const [listing] = await db.insert(listingsTable).values({
       ...data,
       categoryId,
       sellerUsername: user.username,
     }).returning();
+
+    await Promise.all(imageUrls.map(url =>
+      db.insert(imagesTable).values({
+        url,
+        listingId: listing.id,
+        position: imageUrls.indexOf(url) + 1
+      })
+    ));
 
     return NextResponse.json({ data: listing }, { status: 201 });
   } catch (error) {
@@ -148,15 +208,21 @@ export async function GET(request: Request) {
         category: categoriesTable.name,
         listedAt: listingsTable.listedAt,
         sellerUsername: listingsTable.sellerUsername,
+        images: sql`json_agg(json_build_object('id', ${imagesTable.id}, 'url', ${imagesTable.url}, 'position', ${imagesTable.position}))`.as("images")
       })
       .from(listingsTable)
       .leftJoin(categoriesTable, eq(listingsTable.categoryId, categoriesTable.id))
+      .leftJoin(imagesTable, eq(listingsTable.id, imagesTable.listingId))
       .where(and(
         categoryId ? eq(listingsTable.categoryId, Number(categoryId)) : undefined,
         minPrice ? gte(listingsTable.price, minPrice) : undefined,
         maxPrice ? lte(listingsTable.price, maxPrice) : undefined,
         condition ? eq(listingsTable.condition, condition) : undefined,
       ))
+      .groupBy(
+        listingsTable.id,
+        categoriesTable.name
+      )
       .orderBy(desc(listingsTable.listedAt));
 
     return NextResponse.json({ data: listings }, { status: 200 });

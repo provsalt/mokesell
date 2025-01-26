@@ -35,7 +35,7 @@ export const imagesTable = pgTable("images", {
   url: varchar({ length: 512 }).notNull(),
   position: integer().notNull().default(1),
   listingId: integer()
-    .references(() => listingsTable.id, { onDelete: "cascade" }) // TODO: remember to delete in s3 or im gonna go broke
+    .references(() => listingsTable.id, { onDelete: "cascade" })
     .notNull(),
   createdAt: timestamp().notNull().defaultNow(),
 });

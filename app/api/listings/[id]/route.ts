@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { listingsTable, categoriesTable, usersTable } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import {listingsTable, categoriesTable, usersTable, imagesTable} from "@/db/schema";
+import {eq, sql} from "drizzle-orm";
 import {z} from "zod";
 import {cookies} from "next/headers";
 import {getJWTUser} from "@/lib/auth";
+import {deleteFromS3} from "@/lib/s3";
 
 const updateListingSchema = z.object({
   title: z.string().min(1).optional(),
@@ -54,11 +55,18 @@ export const GET = async (_: Request, { params }: { params: Promise<{ id: string
           username: usersTable.username,
           name: usersTable.name,
         },
+        images: sql`json_agg(json_build_object('id', ${imagesTable.id}, 'url', ${imagesTable.url}, 'position', ${imagesTable.position}))`.as("images")
       })
       .from(listingsTable)
       .leftJoin(categoriesTable, eq(listingsTable.categoryId, categoriesTable.id))
       .leftJoin(usersTable, eq(listingsTable.sellerUsername, usersTable.username))
-      .where(eq(listingsTable.id, listingId));
+      .leftJoin(imagesTable, eq(listingsTable.id, imagesTable.listingId))
+      .where(eq(listingsTable.id, listingId)).groupBy(
+        listingsTable.id,
+        categoriesTable.name,
+        usersTable.username,
+        usersTable.name
+      );
 
     if (!listing) return NextResponse.json({ error: "Listing not found" }, { status: 404 });
     return NextResponse.json({ data: listing }, { status: 200 });
@@ -206,6 +214,11 @@ export const DELETE = async (_: Request, { params }: { params: Promise < { id: s
     if (listing.sellerUsername !== user.username) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
+
+    const images = await db.query.imagesTable.findMany({
+      where: eq(imagesTable.listingId, listingId),
+    });
+    await deleteFromS3(images)
 
     await db.delete(listingsTable).where(eq(listingsTable.id, listingId));
     return new Response(null, { status: 204 });
