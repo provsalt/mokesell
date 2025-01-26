@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { db } from "@/db";
 import {listingsTable, categoriesTable, imagesTable} from "@/db/schema";
-import {eq, and, gte, lte, desc, sql} from "drizzle-orm";
+import {eq, and, gte, lte, desc, sql, ilike} from "drizzle-orm";
 import { NextResponse } from "next/server";
 import {cookies} from "next/headers";
 import {getJWTUser} from "@/lib/auth";
@@ -186,6 +186,10 @@ export async function POST(request: Request) {
  *         schema:
  *           type: string
  *           enum: [new, like_new, used, heavily used]
+ *       - in: query
+ *         name: query
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: List of listings
@@ -198,6 +202,7 @@ export async function GET(request: Request) {
     const minPrice = searchParams.get('minPrice');
     const maxPrice = searchParams.get('maxPrice');
     const condition = searchParams.get('condition');
+    const query = searchParams.get("query");
 
     const listings = await db
       .select({
@@ -218,6 +223,7 @@ export async function GET(request: Request) {
         minPrice ? gte(listingsTable.price, minPrice) : undefined,
         maxPrice ? lte(listingsTable.price, maxPrice) : undefined,
         condition ? eq(listingsTable.condition, condition) : undefined,
+        query ? ilike(listingsTable.title, `%${query}%`) : undefined
       ))
       .groupBy(
         listingsTable.id,
