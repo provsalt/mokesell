@@ -28,7 +28,6 @@ export const Navbar = () => {
         <Link href="/user">
           <Button className="dark:bg-transparent">
             <User/>
-            <p>Hi {user.name}</p>
           </Button>
         </Link>
         <Link href="/chats">
