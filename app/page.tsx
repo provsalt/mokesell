@@ -1,35 +1,59 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {ListingCard} from "@/components/Listing/ListingCard";
 
+interface ListingImage {
+  id: number;
+  url: string;
+  position: number[];
+}
+
+interface Listing {
+  id: number;
+  title: string;
+  price: string;
+  condition: string;
+  category: string;
+  listable: string;
+  solicitorsname: string;
+  images: ListingImage[];
+}
+
 export default function Home() {
-  const categories = ["Bikes", "Phones", "Tables", "Plants", "Lego"];
 
-  const allItems = [
-    { name: "Item name", price: "$400", condition: "Brand New", category: "Bikes" },
-    { name: "Item name", price: "$199", condition: "Lightly Used", category: "Phones" },
-    { name: "Item name", price: "$400", condition: "Well Used", category: "Tables" },
-    { name: "Item name", price: "$400", condition: "Brand New", category: "Plants" },
-    { name: "Item name", price: "$400", condition: "Brand New", category: "Lego" },
-  ];
-
-  const nearYouItems = [
-    { name: "Item name", price: "$100", condition: "Well Used", category: "Bikes" },
-    { name: "Item name", price: "$400", condition: "Lightly Used", category: "Phones" },
-    { name: "Item name", price: "$400", condition: "Well Used", category: "Tables" },
-    { name: "Item name", price: "$400", condition: "Brand New", category: "Plants" },
-    { name: "Item name", price: "$300", condition: "Well Used", category: "Lego" },
-  ];
-
-  const [filteredItems, setFilteredItems] = useState(allItems);
+  const [data, setData] = useState<Listing[]>([]);
+  const [filteredItems, setFilteredItems] = useState<Listing[]>([]);
   const [activeCategory, setActiveCategory] = useState("");
+
+  const categories = [...new Set(data.map(item => item.category))];
+
+  useEffect(() => {
+    const storedData = localStorage.getItem('listingsData');
+    
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      setData(parsedData);
+      setFilteredItems(parsedData);
+    } else {
+      fetch("/api/listings")
+        .then((response) => response.json())
+        .then((fetchedData) => {
+          localStorage.setItem('listingsData', JSON.stringify(fetchedData.data));
+          setData(fetchedData.data);
+          setFilteredItems(fetchedData.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching listings:", error);
+        });
+    }
+  }, []);
 
   const handleFilter = (category: string) => {
     if (category === activeCategory) {
-      setFilteredItems(allItems);
+      setFilteredItems(data);
       setActiveCategory("");
     } else {
-      setFilteredItems(allItems.filter((item) => item.category === category));
+      setFilteredItems(data.filter((item) => item.category === category));
       setActiveCategory(category);
     }
   };
@@ -40,8 +64,9 @@ export default function Home() {
       .map((_, i) => (
         <div key={i} className="aspect-square bg-gray-200 rounded-lg"></div>
       ));
-
+      
   return (
+    
     <div className="w-full min-h-screen bg-gray-50 p-8 space-y-12">
       <div className="space-y-4">
         <div className="flex justify-between items-center">
@@ -78,9 +103,16 @@ export default function Home() {
           </div>
         </div>
         <div className="grid grid-cols-5 gap-6">
-          {filteredItems.map((item, i) => (
-            <div key={i}>
-              <ListingCard name={item.name} price={item.price} condition={item.condition} />
+          {filteredItems.map((item) => (
+            <div key={item.id}>
+              <ListingCard 
+                name={item.title} 
+                price={`$${item.price}`} 
+                condition={item.condition} 
+                images={item.images.map(image=>({
+                  url: image.url,
+                  position: image.position[0]
+                }))} />
             </div>
           ))}
         </div>
@@ -94,10 +126,18 @@ export default function Home() {
           </a>
         </div>
         <div className="grid grid-cols-5 gap-6">
-          {nearYouItems.map((item, i) => (
-            <div key={i}>{
-              <ListingCard name={item.name} price={item.price} condition={item.condition} />
-            }</div>
+        {data.slice(0, 5).map((item) => (
+            <div key={item.id}>
+              <ListingCard 
+                name={item.title} 
+                price={`$${item.price}`} 
+                condition={item.condition} 
+                images={item.images.map(image => ({
+                  url: image.url,
+                  position: image.position[0]
+                }))}
+              />
+            </div>
           ))}
         </div>
       </div>
