@@ -31,6 +31,7 @@ export const Navbar = () => {
   const { push } = useRouter();
 
   const search = () => {
+    if (!searchQuery) return;
     push("/search?" + new URLSearchParams({ query: searchQuery }).toString());
   };
 
