@@ -112,10 +112,7 @@ export default function Home() {
                 name={item.title}
                 price={`$${item.price}`}
                 condition={item.condition}
-                images={item.images.map((image) => ({
-                  url: image.url,
-                  position: image.position[0],
-                }))}
+                images={item.images}
               />
             </div>
           ))}
@@ -136,10 +133,7 @@ export default function Home() {
                 name={item.title}
                 price={`$${item.price}`}
                 condition={item.condition}
-                images={item.images.map((image) => ({
-                  url: image.url,
-                  position: image.position[0],
-                }))}
+                images={item.images}
               />
             </div>
           ))}
