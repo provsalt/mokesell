@@ -15,8 +15,6 @@ interface Listing {
   price: string;
   condition: string;
   category: string;
-  listable: string;
-  solicitorsname: string;
   images: ListingImage[];
 }
 
