@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { ListingCard } from "@/components/Listing/ListingCard";
 
 interface ListingImage {
@@ -23,42 +23,58 @@ export default function Home() {
   const [data, setData] = useState<Listing[]>([]);
   const [filteredItems, setFilteredItems] = useState<Listing[]>([]);
   const [activeCategory, setActiveCategory] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const categories = [...new Set(data.map((item) => item.category))];
+  const categories = useMemo(
+    () => [...new Set(data.map((item) => item.category))],
+    [data],
+  );
 
   useEffect(() => {
-    const storedData = localStorage.getItem("listingsData");
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch("/api/listings");
 
-    if (storedData) {
-      const parsedData = JSON.parse(storedData);
-      setData(parsedData);
-      setFilteredItems(parsedData);
-    } else {
-      fetch("/api/listings")
-        .then((response) => response.json())
-        .then((fetchedData) => {
-          localStorage.setItem(
-            "listingsData",
-            JSON.stringify(fetchedData.data),
-          );
-          setData(fetchedData.data);
-          setFilteredItems(fetchedData.data);
-        })
-        .catch((error) => {
-          console.error("Error fetching listings:", error);
-        });
-    }
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const fetchedData = await response.json();
+
+        if (!fetchedData?.data || !Array.isArray(fetchedData.data)) {
+          throw new Error("Invalid data format from API");
+        }
+
+        setData(fetchedData.data);
+        setFilteredItems(fetchedData.data);
+        setError(null);
+      } catch (err) {
+        console.error("Error fetching listings:", err);
+        setError(
+          err instanceof Error ? err.message : "Failed to fetch listings",
+        );
+        setFilteredItems([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
   }, []);
 
-  const handleFilter = (category: string) => {
-    if (category === activeCategory) {
-      setFilteredItems(data);
-      setActiveCategory("");
-    } else {
-      setFilteredItems(data.filter((item) => item.category === category));
-      setActiveCategory(category);
-    }
-  };
+  const handleFilter = useCallback(
+    (category: string) => {
+      if (category === activeCategory) {
+        setFilteredItems(data);
+        setActiveCategory("");
+      } else {
+        setFilteredItems(data.filter((item) => item.category === category));
+        setActiveCategory(category);
+      }
+    },
+    [activeCategory, data],
+  );
 
   const renderPlaceholderBoxes = (count: number) =>
     Array(count)
