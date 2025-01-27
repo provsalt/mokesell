@@ -6,7 +6,7 @@ import { motion } from "motion/react";
 interface ListingImage {
   id: number;
   url: string;
-  position: number[];
+  position: number;
 }
 
 interface Listing {
@@ -130,7 +130,7 @@ export default function Home() {
                     name={item.title}
                     price={`$${item.price}`}
                     condition={item.condition}
-                    images={item.images}
+                    image={item.images.find((i) => i.position === 1)?.url}
                   />
                 </motion.div>
               ))}
@@ -153,13 +153,13 @@ export default function Home() {
                   initial="hidden"
                   animate="visible"
                   variants={cardVariants}
-                  transition={{ type: "spring", stiffness: 200, damping: 50 }}
+                  transition={{ type: "spring", stiffness: 200, damping: 10 }}
                 >
                   <ListingCard
                     name={item.title}
                     price={`$${item.price}`}
                     condition={item.condition}
-                    images={item.images}
+                    image={item.images.find((i) => i.position === 1)?.url}
                   />
                 </motion.div>
               ))}

@@ -2,16 +2,14 @@ export const ListingCard = (props: {
   name?: string;
   price?: string;
   condition?: string;
-  images?: { url: string; position: number[] }[];
+  image?: string;
 }) => {
-  const firstImageUrl = props.images?.[0]?.url;
-
   if (
     !props ||
     !props.name ||
     !props.price ||
     !props.condition ||
-    !firstImageUrl
+    !props.image
   ) {
     return (
       <div className="space-y-2">
@@ -29,7 +27,7 @@ export const ListingCard = (props: {
     <div className="space-y-2 drop-shadow-lg">
       <img
         className="aspect-square bg-gray-200 rounded-lg object-cover"
-        src={firstImageUrl}
+        src={props.image}
         alt={props.name}
         width={300}
         height={300}
