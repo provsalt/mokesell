@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import {ListingCard} from "@/components/Listing/ListingCard";
+import { ListingCard } from "@/components/Listing/ListingCard";
 
 interface ListingImage {
   id: number;
@@ -20,16 +20,15 @@ interface Listing {
 }
 
 export default function Home() {
-
   const [data, setData] = useState<Listing[]>([]);
   const [filteredItems, setFilteredItems] = useState<Listing[]>([]);
   const [activeCategory, setActiveCategory] = useState("");
 
-  const categories = [...new Set(data.map(item => item.category))];
+  const categories = [...new Set(data.map((item) => item.category))];
 
   useEffect(() => {
-    const storedData = localStorage.getItem('listingsData');
-    
+    const storedData = localStorage.getItem("listingsData");
+
     if (storedData) {
       const parsedData = JSON.parse(storedData);
       setData(parsedData);
@@ -38,7 +37,10 @@ export default function Home() {
       fetch("/api/listings")
         .then((response) => response.json())
         .then((fetchedData) => {
-          localStorage.setItem('listingsData', JSON.stringify(fetchedData.data));
+          localStorage.setItem(
+            "listingsData",
+            JSON.stringify(fetchedData.data),
+          );
           setData(fetchedData.data);
           setFilteredItems(fetchedData.data);
         })
@@ -64,9 +66,8 @@ export default function Home() {
       .map((_, i) => (
         <div key={i} className="aspect-square bg-gray-200 rounded-lg"></div>
       ));
-      
+
   return (
-    
     <div className="w-full min-h-screen bg-gray-50 p-8 space-y-12">
       <div className="space-y-4">
         <div className="flex justify-between items-center">
@@ -75,7 +76,9 @@ export default function Home() {
             See all categories &gt;
           </a>
         </div>
-        <div className="grid grid-cols-8 gap-6 rounded-2xl">{renderPlaceholderBoxes(8)}</div>
+        <div className="grid grid-cols-8 gap-6 rounded-2xl">
+          {renderPlaceholderBoxes(8)}
+        </div>
       </div>
 
       <div className="space-y-4">
@@ -102,17 +105,18 @@ export default function Home() {
             ))}
           </div>
         </div>
-        <div className="grid grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           {filteredItems.map((item) => (
             <div key={item.id}>
-              <ListingCard 
-                name={item.title} 
-                price={`$${item.price}`} 
-                condition={item.condition} 
-                images={item.images.map(image=>({
+              <ListingCard
+                name={item.title}
+                price={`$${item.price}`}
+                condition={item.condition}
+                images={item.images.map((image) => ({
                   url: image.url,
-                  position: image.position[0]
-                }))} />
+                  position: image.position[0],
+                }))}
+              />
             </div>
           ))}
         </div>
@@ -125,16 +129,16 @@ export default function Home() {
             See all &gt;
           </a>
         </div>
-        <div className="grid grid-cols-5 gap-6">
-        {data.slice(0, 5).map((item) => (
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+          {data.slice(0, 5).map((item) => (
             <div key={item.id}>
-              <ListingCard 
-                name={item.title} 
-                price={`$${item.price}`} 
-                condition={item.condition} 
-                images={item.images.map(image => ({
+              <ListingCard
+                name={item.title}
+                price={`$${item.price}`}
+                condition={item.condition}
+                images={item.images.map((image) => ({
                   url: image.url,
-                  position: image.position[0]
+                  position: image.position[0],
                 }))}
               />
             </div>
