@@ -71,6 +71,8 @@ export default function Home() {
         <div key={i} className="aspect-square bg-gray-200 rounded-lg"></div>
       ));
 
+  if (error) return <div>Error!</div>;
+
   return (
     <div className="w-full min-h-screen bg-gray-50 p-8 space-y-12">
       <div className="space-y-4">
@@ -110,16 +112,18 @@ export default function Home() {
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-          {filteredItems.map((item) => (
-            <div key={item.id}>
-              <ListingCard
-                name={item.title}
-                price={`$${item.price}`}
-                condition={item.condition}
-                images={item.images}
-              />
-            </div>
-          ))}
+          {loading
+            ? [...Array(10)].map((_, i) => <ListingCard key={i} />)
+            : filteredItems.map((item) => (
+                <div key={item.id}>
+                  <ListingCard
+                    name={item.title}
+                    price={`$${item.price}`}
+                    condition={item.condition}
+                    images={item.images}
+                  />
+                </div>
+              ))}
         </div>
       </div>
 
@@ -131,16 +135,18 @@ export default function Home() {
           </a>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-          {data.slice(0, 5).map((item) => (
-            <div key={item.id}>
-              <ListingCard
-                name={item.title}
-                price={`$${item.price}`}
-                condition={item.condition}
-                images={item.images}
-              />
-            </div>
-          ))}
+          {loading
+            ? [...Array(10)].map((_, i) => <ListingCard key={i} />)
+            : data.slice(0, 5).map((item) => (
+                <div key={item.id}>
+                  <ListingCard
+                    name={item.title}
+                    price={`$${item.price}`}
+                    condition={item.condition}
+                    images={item.images}
+                  />
+                </div>
+              ))}
         </div>
       </div>
     </div>
