@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 export const ListingCard = (props: {
   name?: string;
   price?: string;

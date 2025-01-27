@@ -1,5 +1,3 @@
-import { ReactNode } from "react";
-
 interface Listing {
   id: number;
   title: string;
