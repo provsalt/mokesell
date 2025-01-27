@@ -66,7 +66,7 @@ export default function Home() {
   }, []);
 
   const cardVariants = {
-    hidden: { scale: 0.8, opacity: 0 },
+    hidden: { scale: 0.8, opacity: 0.5 },
     visible: { scale: 1, opacity: 1 },
   };
 
@@ -126,7 +126,7 @@ export default function Home() {
                   initial="hidden"
                   animate="visible"
                   variants={cardVariants}
-                  transition={{ type: "spring", stiffness: 300, damping: 10 }}
+                  transition={{ type: "spring", stiffness: 200, damping: 10 }}
                 >
                   <ListingCard
                     name={item.title}
@@ -155,7 +155,7 @@ export default function Home() {
                   initial="hidden"
                   animate="visible"
                   variants={cardVariants}
-                  transition={{ type: "spring", stiffness: 300, damping: 10 }}
+                  transition={{ type: "spring", stiffness: 200, damping: 50 }}
                 >
                   <ListingCard
                     name={item.title}
