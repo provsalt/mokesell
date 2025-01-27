@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, useMemo } from "react";
 import { ListingCard } from "@/components/Listing/ListingCard";
+import { motion } from "motion/react";
 
 interface ListingImage {
   id: number;
@@ -64,6 +65,11 @@ export default function Home() {
     fetchData();
   }, []);
 
+  const cardVariants = {
+    hidden: { scale: 0.8, opacity: 0 },
+    visible: { scale: 1, opacity: 1 },
+  };
+
   const renderPlaceholderBoxes = (count: number) =>
     Array(count)
       .fill(0)
@@ -115,14 +121,20 @@ export default function Home() {
           {loading
             ? [...Array(10)].map((_, i) => <ListingCard key={i} />)
             : filteredItems.map((item) => (
-                <div key={item.id}>
+                <motion.div
+                  key={item.id}
+                  initial="hidden"
+                  animate="visible"
+                  variants={cardVariants}
+                  transition={{ type: "spring", stiffness: 300, damping: 10 }}
+                >
                   <ListingCard
                     name={item.title}
                     price={`$${item.price}`}
                     condition={item.condition}
                     images={item.images}
                   />
-                </div>
+                </motion.div>
               ))}
         </div>
       </div>
@@ -138,14 +150,20 @@ export default function Home() {
           {loading
             ? [...Array(10)].map((_, i) => <ListingCard key={i} />)
             : data.slice(0, 5).map((item) => (
-                <div key={item.id}>
+                <motion.div
+                  key={item.id}
+                  initial="hidden"
+                  animate="visible"
+                  variants={cardVariants}
+                  transition={{ type: "spring", stiffness: 300, damping: 10 }}
+                >
                   <ListingCard
                     name={item.title}
                     price={`$${item.price}`}
                     condition={item.condition}
                     images={item.images}
                   />
-                </div>
+                </motion.div>
               ))}
         </div>
       </div>
