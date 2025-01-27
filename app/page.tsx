@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { ListingCard } from "@/components/Listing/ListingCard";
 
 interface ListingImage {
@@ -21,8 +21,11 @@ interface Listing {
 
 export default function Home() {
   const [data, setData] = useState<Listing[]>([]);
-  const [filteredItems, setFilteredItems] = useState<Listing[]>([]);
-  const [activeCategory, setActiveCategory] = useState("");
+  const [activeCategory, setActiveCategory] = useState("Electronics");
+  const filteredItems = useMemo(
+    () => data.filter((listing) => listing.category === activeCategory),
+    [data, activeCategory],
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -48,33 +51,18 @@ export default function Home() {
         }
 
         setData(fetchedData.data);
-        setFilteredItems(fetchedData.data);
         setError(null);
       } catch (err) {
         console.error("Error fetching listings:", err);
         setError(
           err instanceof Error ? err.message : "Failed to fetch listings",
         );
-        setFilteredItems([]);
       } finally {
         setLoading(false);
       }
     };
     fetchData();
   }, []);
-
-  const handleFilter = useCallback(
-    (category: string) => {
-      if (category === activeCategory) {
-        setFilteredItems(data);
-        setActiveCategory("");
-      } else {
-        setFilteredItems(data.filter((item) => item.category === category));
-        setActiveCategory(category);
-      }
-    },
-    [activeCategory, data],
-  );
 
   const renderPlaceholderBoxes = (count: number) =>
     Array(count)
@@ -114,7 +102,7 @@ export default function Home() {
                     ? "bg-blue-500 text-white"
                     : "bg-gray-200 text-gray-700"
                 }`}
-                onClick={() => handleFilter(category)}
+                onClick={() => setActiveCategory(category)}
               >
                 {category}
               </button>
