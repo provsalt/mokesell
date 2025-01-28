@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export const ListingCard = (props: {
   name?: string;
   price?: string;
@@ -25,12 +27,13 @@ export const ListingCard = (props: {
 
   return (
     <div className="space-y-2 drop-shadow-lg">
-      <img
+      <Image
         className="aspect-square bg-gray-200 rounded-lg object-cover"
         src={props.image}
         alt={props.name}
         width={300}
         height={300}
+        loading="lazy"
       />
       <div className="space-y-1">
         <p className="text-lg text-gray-600">{props.name}</p>
