@@ -1,11 +1,11 @@
 import { z } from "zod";
 import { db } from "@/db";
-import {listingsTable, categoriesTable, imagesTable} from "@/db/schema";
-import {eq, and, gte, lte, desc, sql, ilike} from "drizzle-orm";
+import { listingsTable, categoriesTable, imagesTable } from "@/db/schema";
+import { eq, and, gte, lte, desc, sql, ilike } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import {cookies} from "next/headers";
-import {getJWTUser} from "@/lib/auth";
-import {uploadToS3} from "@/lib/s3";
+import { cookies } from "next/headers";
+import { getJWTUser } from "@/lib/auth";
+import { uploadToS3 } from "@/lib/s3";
 
 const createListingSchema = z.object({
   title: z.string().min(1),
@@ -13,7 +13,10 @@ const createListingSchema = z.object({
   price: z.string().regex(/^\d+(\.\d{1,2})?$/),
   condition: z.enum(["new", "like_new", "used", "heavily used"]),
   categoryId: z.number().int().positive(),
-  deliveryCost: z.string().regex(/^\d+(\.\d{1,2})?$/).optional(),
+  deliveryCost: z
+    .string()
+    .regex(/^\d+(\.\d{1,2})?$/)
+    .optional(),
   images: z.array(z.instanceof(File)).optional(),
 });
 
@@ -106,61 +109,79 @@ const createListingSchema = z.object({
  *         description: Validation error
  */
 
-export async function POST(request: Request) {
+export const POST = async (request: Request) => {
   const user = await getJWTUser(await cookies());
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!user)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
     const formData = await request.formData();
 
     const body = {
-      title: formData.get('title'),
-      description: formData.get('description'),
-      price: formData.get('price'),
-      condition: formData.get('condition'),
-      categoryId: Number(formData.get('categoryId')),
-      deliveryCost: formData.get('deliveryCost'),
-      images: formData.getAll('images')
+      title: formData.get("title"),
+      description: formData.get("description"),
+      price: formData.get("price"),
+      condition: formData.get("condition"),
+      categoryId: Number(formData.get("categoryId")),
+      deliveryCost: formData.get("deliveryCost"),
+      images: formData.getAll("images"),
     };
 
     const validation = createListingSchema.safeParse({
       ...body,
-      images: formData.getAll('images'),
+      images: formData.getAll("images"),
     });
 
     if (!validation.success) {
-      return NextResponse.json({ error: validation.error.errors }, { status: 422 });
+      return NextResponse.json(
+        { error: validation.error.errors },
+        { status: 422 },
+      );
     }
 
     const { categoryId, ...data } = validation.data;
-    const category = await db.query.categoriesTable.findFirst({ where: eq(categoriesTable.id, categoryId) });
-    if (!category) return NextResponse.json({ error: "Category not found" }, { status: 400 });
+    const category = await db.query.categoriesTable.findFirst({
+      where: eq(categoriesTable.id, categoryId),
+    });
+    if (!category)
+      return NextResponse.json(
+        { error: "Category not found" },
+        { status: 400 },
+      );
 
-    const imageFiles = formData.getAll('images') as File[];
+    const imageFiles = formData.getAll("images") as File[];
     const imageUrls = await Promise.all(
-      imageFiles.map(file => uploadToS3(file))
+      imageFiles.map((file) => uploadToS3(file)),
     );
 
-    const [listing] = await db.insert(listingsTable).values({
-      ...data,
-      categoryId,
-      sellerUsername: user.username,
-    }).returning();
-
-    await Promise.all(imageUrls.map(url =>
-      db.insert(imagesTable).values({
-        url,
-        listingId: listing.id,
-        position: imageUrls.indexOf(url) + 1
+    const [listing] = await db
+      .insert(listingsTable)
+      .values({
+        ...data,
+        categoryId,
+        sellerUsername: user.username,
       })
-    ));
+      .returning();
+
+    await Promise.all(
+      imageUrls.map((url) =>
+        db.insert(imagesTable).values({
+          url,
+          listingId: listing.id,
+          position: imageUrls.indexOf(url) + 1,
+        }),
+      ),
+    );
 
     return NextResponse.json({ data: listing }, { status: 201 });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
-}
+};
 
 /**
  * @swagger
@@ -194,14 +215,14 @@ export async function POST(request: Request) {
  *       200:
  *         description: List of listings
  */
-export async function GET(request: Request) {
+export const GET = async (request: Request) => {
   try {
     // best practice: add pagination or remove unnecessary api details to lessen network payload. but this is fine for now.
     const { searchParams } = new URL(request.url);
-    const categoryId = searchParams.get('categoryId');
-    const minPrice = searchParams.get('minPrice');
-    const maxPrice = searchParams.get('maxPrice');
-    const condition = searchParams.get('condition');
+    const categoryId = searchParams.get("categoryId");
+    const minPrice = searchParams.get("minPrice");
+    const maxPrice = searchParams.get("maxPrice");
+    const condition = searchParams.get("condition");
     const query = searchParams.get("query");
 
     const listings = await db
@@ -213,27 +234,37 @@ export async function GET(request: Request) {
         category: categoriesTable.name,
         listedAt: listingsTable.listedAt,
         sellerUsername: listingsTable.sellerUsername,
-        images: sql`json_agg(json_build_object('id', ${imagesTable.id}, 'url', ${imagesTable.url}, 'position', ${imagesTable.position}))`.as("images")
+        images:
+          sql`json_agg(json_build_object('id', ${imagesTable.id}, 'url', ${imagesTable.url}, 'position', ${imagesTable.position}))`.as(
+            "images",
+          ),
       })
       .from(listingsTable)
-      .leftJoin(categoriesTable, eq(listingsTable.categoryId, categoriesTable.id))
-      .leftJoin(imagesTable, eq(listingsTable.id, imagesTable.listingId))
-      .where(and(
-        categoryId ? eq(listingsTable.categoryId, Number(categoryId)) : undefined,
-        minPrice ? gte(listingsTable.price, minPrice) : undefined,
-        maxPrice ? lte(listingsTable.price, maxPrice) : undefined,
-        condition ? eq(listingsTable.condition, condition) : undefined,
-        query ? ilike(listingsTable.title, `%${query}%`) : undefined
-      ))
-      .groupBy(
-        listingsTable.id,
-        categoriesTable.name
+      .leftJoin(
+        categoriesTable,
+        eq(listingsTable.categoryId, categoriesTable.id),
       )
+      .leftJoin(imagesTable, eq(listingsTable.id, imagesTable.listingId))
+      .where(
+        and(
+          categoryId
+            ? eq(listingsTable.categoryId, Number(categoryId))
+            : undefined,
+          minPrice ? gte(listingsTable.price, minPrice) : undefined,
+          maxPrice ? lte(listingsTable.price, maxPrice) : undefined,
+          condition ? eq(listingsTable.condition, condition) : undefined,
+          query ? ilike(listingsTable.title, `%${query}%`) : undefined,
+        ),
+      )
+      .groupBy(listingsTable.id, categoriesTable.name)
       .orderBy(desc(listingsTable.listedAt));
 
     return NextResponse.json({ data: listings }, { status: 200 });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
-}
+};
