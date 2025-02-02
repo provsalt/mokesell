@@ -43,10 +43,10 @@ const updateMessageSchema = z.object({
  */
 export const PATCH = async (
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{id: string}>},
 ) => {
   try {
-    const id = Number(params.id);
+    const id = Number((await params).id);
     if (isNaN(id)) {
       return NextResponse.json(
         { error: "Invalid message id" },
