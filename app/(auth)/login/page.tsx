@@ -10,6 +10,8 @@ import {loginSchema} from "@/lib/schemas";
 import {useContext} from "react";
 import {UserContext} from "@/providers/UserProvider";
 import {useRouter} from "next/navigation";
+import {DotLottieReact} from '@lottiefiles/dotlottie-react';
+
 
 const Login = () => {
   const [, setUser] = useContext(UserContext);

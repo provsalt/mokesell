@@ -10,6 +10,18 @@ import {signUpSchema} from "@/lib/schemas";
 import {useContext} from "react";
 import {UserContext} from "@/providers/UserProvider";
 import {useRouter} from "next/navigation";
+import {DotLottieReact} from '@lottiefiles/dotlottie-react';
+
+const loopAnimation = () => {
+  return (
+    <DotLottieReact
+      src="https://lottie.host/ea15dee3-8f70-44b2-a9d9-2f573380cd57/YgOC2p0OUd.lottie"
+      loop
+      autoplay
+    />
+  );
+};
+
 
 const Signup = () => {
   const [, setUser] = useContext(UserContext);
@@ -42,84 +54,89 @@ const Signup = () => {
     })
   }
 
-  const form = useForm<z.infer<typeof signUpSchema>>({
-    resolver: zodResolver(signUpSchema),
-    defaultValues: {
-      username: "",
-      name: "",
-      email: "",
-      password: "",
-    },
-  })
+const form = useForm<z.infer<typeof signUpSchema>>({
+  resolver: zodResolver(signUpSchema),
+  defaultValues: {
+    username: "",
+    name: "",
+    email: "",
+    password: "",
+  },
+})
 
-  return (
-    <div className="flex-1 flex flex-col justify-center items-center">
-      <div className="p-4 rounded-md">
-        <p className="mb-4 text-lg">Welcome to Mokesell</p>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col gap-4">
+return (
+  <div className="flex justify-center items-center bg-white">
+    <div className="rounded-lg outline-1 outline-black/5 p-8 flex flex-row justify-center items-center gap-6 w-[600px]">
+      <div className="flex-1 flex flex-col justify-center items-center w-full">
+      <p className="flex flex-row mb-4 text-xl font-medium">Welcome to Mokesell</p>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col gap-5">
 
-            <FormField
-              control={form.control}
-              name="name"
-              render={({field}) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="John Doe" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    This is your public display name.
-                  </FormDescription>
-                  <FormMessage/>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="username"
-              render={({field}) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input placeholder="johndoe" {...field} />
-                  </FormControl>
-                  <FormMessage/>
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="name"
+                render={({field}) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="John Doe" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      This is your public display name.
+                    </FormDescription>
+                    <FormMessage/>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="username"
+                render={({field}) => (
+                  <FormItem>
+                    <FormLabel>Username</FormLabel>
+                    <FormControl>
+                      <Input placeholder="johndoe" {...field} />
+                    </FormControl>
+                    <FormMessage/>
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="email"
-              render={({field}) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="name@example.com" {...field} />
-                  </FormControl>
-                  <FormMessage/>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({field}) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" placeholder="********" {...field} />
-                  </FormControl>
-                  <FormMessage/>
-                </FormItem>
-              )}
-            />
-            <Button type="submit">Sign up</Button>
-          </form>
-        </Form>
-      </div>
+              <FormField
+                control={form.control}
+                name="email"
+                render={({field}) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input placeholder="name@example.com" {...field} />
+                    </FormControl>
+                    <FormMessage/>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({field}) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input type="password" placeholder="********" {...field} />
+                    </FormControl>
+                    <FormMessage/>
+                  </FormItem>
+                )}
+              />
+              <Button type="submit">Sign up</Button>
+            </form>
+          </Form>
+        </div>
+        <div className="w-xs h-xs">
+          {loopAnimation()}
+        </div>
     </div>
+  </div>
   )
 }
 
