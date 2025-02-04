@@ -4,8 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 
-import { Heart } from "lucide-react"; // Add this import for the heart icon
-
 interface Listing {
   id: number;
   title: string;
@@ -66,6 +64,7 @@ const ListingPage = async ({ params }: { params: Promise<{ id: string }> }) => {
                 src={listing.images[0].url}
                 alt={listing.title}
                 fill
+                priority
                 className="object-cover"
               />
             </div>
@@ -121,8 +120,10 @@ const ListingPage = async ({ params }: { params: Promise<{ id: string }> }) => {
         <div className="w-full md:w-1/3 space-y-4">
           <div className="bg-gray-100 rounded-lg p-4 flex flex-col gap-4">
             <div className="flex items-center gap-3">
-              <img
+              <Image
                 src={avatar}
+                width={64}
+                height={64}
                 alt={listing.seller.name}
                 className="w-12 h-12 rounded-full"
               />
@@ -175,7 +176,7 @@ const ListingPage = async ({ params }: { params: Promise<{ id: string }> }) => {
                   <div key={index} className="space-y-1">
                     <div className="flex items-center gap-2">
                       {/*TODO: calculate image with dicebear*/}
-                      <img alt="" className="w-8 h-8 rounded-full" />
+                      {/*<img alt="" className="w-8 h-8 rounded-full" />*/}
                       <div>
                         <p className="font-semibold">{listing.seller.name}</p>
                         <div className="flex items-center gap-1">
