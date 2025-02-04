@@ -12,6 +12,15 @@ import {UserContext} from "@/providers/UserProvider";
 import {useRouter} from "next/navigation";
 import {DotLottieReact} from '@lottiefiles/dotlottie-react';
 
+const loopAnimation = () => {
+  return (
+    <DotLottieReact
+      src="https://lottie.host/ea15dee3-8f70-44b2-a9d9-2f573380cd57/YgOC2p0OUd.lottie"
+      loop
+      autoplay
+    />
+  );
+};
 
 const Login = () => {
   const [, setUser] = useContext(UserContext);
@@ -56,42 +65,49 @@ const Login = () => {
   })
 
   return (
-    <div className="flex-1 flex flex-col justify-center items-center">
-      <div className="p-4 rounded-md">
-        <p className="mb-4 text-lg">Welcome back!</p>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col gap-4">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({field}) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="name@example.com" {...field} />
-                  </FormControl>
-                  <FormMessage/>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({field}) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" placeholder="********" {...field} />
-                  </FormControl>
-                  <FormMessage/>
-                </FormItem>
-              )}
-            />
-            <Button type="submit">Login</Button>
-          </form>
-        </Form>
+    <div className="flex justify-center items-center">
+      <div className="shadow-sm rounded-lg outline-1 bg-white outline-black/5 p-8 flex flex-row justify-center items-center gap-6 w-[600px]">
+      <div className="flex-1 flex flex-col justify-center items-center">
+        <div className="p-4 rounded-md">
+          <p className="mb-4 text-lg">Welcome back!</p>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col gap-4">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({field}) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input placeholder="name@example.com" {...field} />
+                    </FormControl>
+                    <FormMessage/>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({field}) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input type="password" placeholder="********" {...field} />
+                    </FormControl>
+                    <FormMessage/>
+                  </FormItem>
+                )}
+              />
+              <Button type="submit">Login</Button>
+            </form>
+          </Form>
+        </div>
+      </div>
+      <div className="w-xs h-xs">
+          {loopAnimation()}
       </div>
     </div>
+  </div>
   )
 }
 
