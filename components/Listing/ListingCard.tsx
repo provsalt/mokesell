@@ -1,6 +1,8 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export const ListingCard = (props: {
+  id?: number
   name?: string;
   price?: string;
   condition?: string;
@@ -11,7 +13,8 @@ export const ListingCard = (props: {
     !props.name ||
     !props.price ||
     !props.condition ||
-    !props.image
+    !props.image ||
+    !props.id
   ) {
     return (
       <div className="space-y-2">
@@ -26,22 +29,24 @@ export const ListingCard = (props: {
   }
 
   return (
-    <div className="space-y-2 drop-shadow-lg">
-      <Image
-        className="aspect-square bg-gray-200 rounded-lg object-cover"
-        src={props.image}
-        alt={props.name}
-        width={300}
-        height={300}
-        loading="lazy"
-      />
-      <div className="space-y-1">
-        <p className="text-lg text-gray-600">{props.name}</p>
-        <p className="font-medium">{props.price}</p>
-        <p className="text-gray-500 capitalize">
-          {props.condition.replace("_", " ")}
-        </p>
-      </div>
+    <div className="hover:bg-gray-200 space-y-2 rounded-lg drop-shadow-lg">
+      <Link href={`/listings/${props.id}`} >
+        <Image
+          className="aspect-square bg-gray-200 rounded-lg object-cover"
+          src={props.image}
+          alt={props.name}
+          width={300}
+          height={300}
+          loading="lazy"
+        />
+        <div className="space-y-1">
+          <p className="text-lg text-gray-600">{props.name}</p>
+          <p className="font-medium">{props.price}</p>
+          <p className="text-gray-500 capitalize">
+            {props.condition.replace("_", " ")}
+          </p>
+        </div>
+      </Link>
     </div>
   );
 };

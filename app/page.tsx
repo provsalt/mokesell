@@ -127,6 +127,7 @@ export default function Home() {
                   transition={{ type: "spring", stiffness: 200, damping: 10 }}
                 >
                   <ListingCard
+                    id={item.id}
                     name={item.title}
                     price={`$${item.price}`}
                     condition={item.condition}
@@ -156,6 +157,7 @@ export default function Home() {
                   transition={{ type: "spring", stiffness: 200, damping: 10 }}
                 >
                   <ListingCard
+                    id={item.id}
                     name={item.title}
                     price={`$${item.price}`}
                     condition={item.condition}
