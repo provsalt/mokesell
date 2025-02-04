@@ -1,11 +1,16 @@
 import { createAvatar } from "@dicebear/core";
 import { pixelArt } from "@dicebear/collection";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import Image from "next/image";
+
+import { Heart } from "lucide-react"; // Add this import for the heart icon
 
 interface Listing {
   id: number;
   title: string;
   description: string;
-  price: string;
+  price: number;
   condition: string;
   category: string;
   deliveryCost: string;
@@ -18,6 +23,15 @@ interface Listing {
 interface Seller {
   username: string;
   name: string;
+  rating: number;
+  reviewCount: number;
+  reviews: Review[];
+}
+
+interface Review {
+  rating: number;
+  comment: string;
+  date: string;
 }
 
 interface Image {
@@ -34,30 +48,145 @@ const ListingPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   ).data;
 
   if (!listing) {
-    return <div></div>;
+    return <div>Loading...</div>;
   }
 
   const avatar = createAvatar(pixelArt, {
-    size: 128,
+    size: 48,
     seed: listing.seller.username,
   }).toDataUri();
 
   return (
-    <div className="container mx-auto">
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="w-2/3">
-          {listing.images && (
-            <img
-              src={listing.images[0].url}
-              className="aspect-video bg-cover"
-            />
-          )}
+    <div className="md:container mx-auto p-4">
+      <div className="flex flex-col md:flex-row gap-8">
+        <div className="flex-grow space-y-4">
+          <div className="flex flex-col gap-3">
+            <div className="flex-shrink-1 aspect-square relative">
+              <Image
+                src={listing.images[0].url}
+                alt={listing.title}
+                fill
+                className="object-cover"
+              />
+            </div>
+
+            <div className="flex flex-grow-1 flex-row h-16 md:h-24 gap-2">
+              {listing.images.map((img, index) => (
+                <div
+                  key={img.id}
+                  className="aspect-square relative border rounded-md overflow-hidden"
+                >
+                  <Image
+                    src={img.url}
+                    alt={`Thumbnail ${index + 1}`}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h1 className="text-2xl font-semibold">{listing.title}</h1>
+            </div>
+            <p className="text-2xl font-bold">${listing.price}</p>
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              <span>${listing.deliveryCost}</span>
+              <span>Same day delivery</span>
+            </div>
+
+            <div className="space-y-2">
+              <h2 className="font-semibold">Details</h2>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-gray-600">Condition</p>
+                  <p>{listing.condition}</p>
+                </div>
+                <div>
+                  <p className="text-gray-600">Category</p>
+                  <p>{listing.category}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <h2 className="font-semibold">Description</h2>
+              <p className="text-gray-600">{listing.description}</p>
+            </div>
+          </div>
         </div>
-        <div className="p-8 flex-1 bg-gray-100 dark:bg-gray-900">
-          <div className="flex">
-            <img className="h-12 w-12" src={avatar} />
-            <div className="">
-              {listing.seller.name}@{listing.seller.username}
+
+        <div className="w-full md:w-64 space-y-4">
+          <div className="bg-gray-100 rounded-lg p-4 flex flex-col gap-4">
+            <div className="flex items-center gap-3">
+              <img
+                src={avatar}
+                alt={listing.seller.name}
+                className="w-12 h-12 rounded-full"
+              />
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold">{listing.seller.name}</span>
+                  {listing.seller.rating && (
+                    <span className="text-gray-600">
+                      {listing.seller.rating} ★ ({listing.seller.reviewCount})
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <Button className="w-full">Message</Button>
+
+            <div className="flex gap-2">
+              <Input
+                type="number"
+                defaultValue={listing.price}
+                className="flex-1"
+              />
+              <Button className="bg-blue-500">Make Offer</Button>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <div>
+                <h3 className="font-semibold">Returns and refunds</h3>
+                <p className="text-sm text-gray-600">
+                  Depends on the seller&#39;s decision. Not covered by Buyer
+                  Protection.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-semibold">Safety policy</h3>
+                <p className="text-sm text-gray-600">
+                  Pay only at the meet-up. Transferring money directly to
+                  strangers puts you at risk of e-commerce scams.
+                </p>
+              </div>
+            </div>
+            <div className="space-y-2">
+              {listing.seller.reviews && (
+                <h3 className="font-semibold">Reviews</h3>
+              )}
+              {listing.seller.reviews &&
+                listing.seller.reviews.map((review, index) => (
+                  <div key={index} className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      {/*TODO: calculate image with dicebear*/}
+                      <img alt="" className="w-8 h-8 rounded-full" />
+                      <div>
+                        <p className="font-semibold">{listing.seller.name}</p>
+                        <div className="flex items-center gap-1">
+                          <span>{"★".repeat(review.rating)}</span>
+                          <span className="text-gray-600">{review.date}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-600">{review.comment}</p>
+                  </div>
+                ))}
             </div>
           </div>
         </div>
