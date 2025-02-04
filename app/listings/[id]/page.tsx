@@ -102,7 +102,7 @@ const ListingPage = async ({ params }: { params: Promise<{ id: string }> }) => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-gray-600">Condition</p>
-                  <p>{listing.condition}</p>
+                  <p>{listing.condition.split(' ').map(i => i[0].toUpperCase() + i.substring(1).toLowerCase()).join(' ')}</p>
                 </div>
                 <div>
                   <p className="text-gray-600">Category</p>
@@ -118,7 +118,7 @@ const ListingPage = async ({ params }: { params: Promise<{ id: string }> }) => {
           </div>
         </div>
 
-        <div className="w-full md:w-64 space-y-4">
+        <div className="w-full md:w-1/3 space-y-4">
           <div className="bg-gray-100 rounded-lg p-4 flex flex-col gap-4">
             <div className="flex items-center gap-3">
               <img
