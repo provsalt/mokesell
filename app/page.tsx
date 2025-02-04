@@ -100,7 +100,7 @@ export default function Home() {
             </a>
           </div>
           <div className="flex gap-4 overflow-x-auto pb-2">
-            {categories.map((category, i) => (
+            {categories.filter((s, i) => i < 5).map((category, i) => (
               <button
                 key={i}
                 className={`px-4 py-2 text-sm rounded-full whitespace-nowrap transition ${
