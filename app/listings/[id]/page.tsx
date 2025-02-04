@@ -3,6 +3,7 @@ import { pixelArt } from "@dicebear/collection";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
+import {ListingImage} from "@/components/Listing/ListingImage";
 
 interface Listing {
   id: number;
@@ -58,33 +59,7 @@ const ListingPage = async ({ params }: { params: Promise<{ id: string }> }) => {
     <div className="md:container mx-auto p-4">
       <div className="flex flex-col md:flex-row gap-8">
         <div className="flex-grow space-y-4">
-          <div className="flex flex-col gap-3">
-            <div className="flex-shrink-1 aspect-square relative">
-              <Image
-                src={listing.images[0].url}
-                alt={listing.title}
-                fill
-                priority
-                className="object-cover"
-              />
-            </div>
-
-            <div className="flex flex-grow-1 flex-row h-16 md:h-24 gap-2">
-              {listing.images.map((img, index) => (
-                <div
-                  key={img.id}
-                  className="aspect-square relative border rounded-md overflow-hidden"
-                >
-                  <Image
-                    src={img.url}
-                    alt={`Thumbnail ${index + 1}`}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
+          <ListingImage images={listing.images}/>
 
           <div className="space-y-4">
             <div className="flex justify-between items-center">
