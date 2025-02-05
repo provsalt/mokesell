@@ -66,20 +66,26 @@ export const Navbar = () => {
             </div>
           )}
           <div className="flex gap-2">
-            <Link href="/">
-              <Button className="dark:bg-transparent">Sell</Button>
-            </Link>
-            <Link href="/user">
-              <Button className="dark:bg-transparent">
-                <User />
+
+              <Button asChild className="dark:bg-transparent">
+                <Link href="/">
+                Sell
+
+                </Link>
               </Button>
-            </Link>
-            <Link href="/chats">
-              <Button className="dark:bg-transparent">
+              <Button asChild className="dark:bg-transparent">
+                <Link href="/user">
+                  <User />
+                </Link>
+              </Button>
+              <Button asChild className="dark:bg-transparent">
+
+                <Link href="/chats">
                 <MessageCircle />
                 <p className="sr-only">Chat</p>
+
+                </Link>
               </Button>
-            </Link>
             <Button onClick={logout} className="dark:bg-transparent">
               <LogOut />
               <p className="sr-only">Logout</p>
