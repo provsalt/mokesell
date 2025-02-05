@@ -65,7 +65,7 @@ const form = useForm<z.infer<typeof signUpSchema>>({
 })
 
 return (
-  <div className="flex justify-center items-center">
+  <div className="flex flex-1 justify-center items-center">
     <div className="shadow-sm rounded-lg bg-white outline-1 outline-black/5 p-8 flex flex-row justify-center items-center gap-6 w-[600px]">
       <div className="flex-1 flex flex-col justify-center items-center w-full">
       <p className="flex flex-row mb-4 text-xl font-medium">Welcome to Mokesell</p>

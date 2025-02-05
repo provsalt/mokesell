@@ -20,7 +20,7 @@ export default function RootLayout({
            <div className="sticky top-0 z-40 dark:bg-gray-950 dark:text-gray-50 bg-gray-50 text-gray-950 drop-shadow-md">
              <Navbar/>
            </div>
-           <main className="flex flex-1 items-center justify-center dark:bg-gray-950 dark:text-gray-50 bg-gray-50 text-gray-950 ">
+           <main className="flex flex-1 dark:bg-gray-950 dark:text-gray-50 bg-gray-50 text-gray-950 ">
              {children}
            </main>
          </UserProvider>
