@@ -1,4 +1,3 @@
-import { z } from "zod";
 import { db } from "@/db";
 import { listingsTable, categoriesTable, imagesTable } from "@/db/schema";
 import { eq, and, gte, lte, desc, sql, ilike } from "drizzle-orm";
@@ -111,7 +110,7 @@ export const POST = async (request: Request) => {
       price: formData.get("price"),
       condition: formData.get("condition"),
       categoryId: Number(formData.get("categoryId")),
-      deliveryCost: formData.get("deliveryCost"),
+      deliveryCost: formData.get("deliveryCost") ?? undefined,
       images: formData.getAll("images"),
     };
 

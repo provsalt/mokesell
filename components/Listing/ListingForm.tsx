@@ -1,6 +1,5 @@
 // using client here since the full form requires mostly client side interactions
 "use client";
-
 import {createListingSchema} from "@/lib/schemas";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -14,15 +13,16 @@ import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import {cn} from "@/lib/utils";
 import {Check, ChevronsUpDown} from "lucide-react";
 import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from "@/components/ui/command";
+import Image from "next/image";
+import {useEffect, useRef, useState} from "react";
 
 type Category = {
   id: number
   name: string
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const formSchema = createListingSchema.extend({
-  categoryId: z.number().int().positive({message: "Invalid category"}).optional(),
+  categoryId: z.number().int().min(1, {message: "Invalid category"}),
 })
 
 type Props = {
@@ -41,13 +41,71 @@ export const ListingForm = ({listing, categories}: Props) => {
   }
 
   const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(createListingSchema),
+    resolver: zodResolver(formSchema),
     defaultValues: defaultValues
   })
 
+  const [previews, setPreviews] = useState<string[]>([])
+
   const submit = async (values: z.infer<typeof formSchema>) => {
     console.log(values)
+    const formData = new FormData();
+
+    formData.append("title", values.title);
+    formData.append("description", values.description);
+    formData.append("price", String(values.price));
+    formData.append("condition", values.condition);
+    if (values.categoryId && values.categoryId > 0) {
+      formData.append("categoryId", String(values.categoryId));
+    }
+    if (values.deliveryCost !== undefined) {
+      formData.append("deliveryCost", String(values.deliveryCost));
+    }
+
+    if (values.images && values.images.length > 0) {
+      values.images.forEach((file: File) => {
+        formData.append("images", file);
+      });
+    }
+
+    try {
+      const response = await fetch("/api/listings", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error(errorData)
+      }
+
+      const data = await response.json();
+      console.log("Listing saved:", data);
+    } catch (error) {
+      console.error("Error posting listing:", error);
+    }
   }
+
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const [width, setWidth] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (triggerRef.current) {
+      setWidth(triggerRef.current.getBoundingClientRect().width);
+    }
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      previews.forEach(url => URL.revokeObjectURL(url))
+    }
+  }, [previews])
+
+  useEffect(() => {
+    if (triggerRef.current) {
+      setWidth(triggerRef.current.getBoundingClientRect().width);
+    }
+  }, []);
 
   return (
     <div className="flex flex-1">
@@ -63,6 +121,45 @@ export const ListingForm = ({listing, categories}: Props) => {
               <FormMessage />
             </FormItem>
           )} name="title"/>
+
+          <FormField
+            control={form.control}
+            name="images"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Images</FormLabel>
+                <FormControl>
+                  <Input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={(e) => {
+                      const files = Array.from(e.target.files || [])
+                      field.onChange(files)
+                      const urls = files.map(file => URL.createObjectURL(file))
+                      setPreviews(urls)
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {previews.length > 0 && (
+            <div className="flex gap-2 flex-wrap">
+              {previews.map((preview, index) => (
+                <div key={index} className="w-20 h-20 relative">
+                  <Image
+                    src={preview}
+                    fill
+                    alt={`Preview ${index}`}
+                    className="object-cover rounded"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
           <FormField
             control={form.control}
             name="description"
@@ -168,6 +265,7 @@ export const ListingForm = ({listing, categories}: Props) => {
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
+                          ref={triggerRef}
                           variant="outline"
                           role="combobox"
                           className={cn(
@@ -184,7 +282,7 @@ export const ListingForm = ({listing, categories}: Props) => {
                         </Button>
                       </FormControl>
                     </PopoverTrigger>
-                    <PopoverContent className="w-full p-0">
+                    <PopoverContent className="w-full p-0" style={{width: width ? width : undefined}}>
                       <Command>
                         <CommandInput
                           placeholder="Search category..."

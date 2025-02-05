@@ -87,7 +87,7 @@ const ListingPage = async ({ params }: { params: Promise<{ id: string }> }) => {
 
             <div className="space-y-2">
               <h2 className="font-semibold">Description</h2>
-              <p className="text-gray-600">{listing.description}</p>
+              <p className="text-gray-600">{listing.description.replace(/\n/g, "<br />")}</p>
             </div>
           </div>
         </div>
