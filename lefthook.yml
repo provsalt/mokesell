@@ -25,7 +25,6 @@ pre-commit:
          run: bunx prettier --write --list-different {staged_files}
          glob: "*.{js,jsx,ts,tsx,json,css,scss,md,html}"
          stage_fixed: true
-         interactive: true
 
 #     - name: rubocop
 #       glob: "*.rb"
