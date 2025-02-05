@@ -1,8 +1,19 @@
 import {ListingForm} from "@/components/Listing/ListingForm";
+import {cookies} from "next/headers";
+import {getJWTUser} from "@/lib/auth";
 
-const SellPage = () => {
+const SellPage = async () => {
+  const auth = await getJWTUser(await cookies());
+  const categories: {id: number, name: string}[] = (await (await fetch("http://localhost:3000/api/categories")).json()).data
+  console.log(categories)
+  if (!auth) {
+    return <div>Unauthorized</div>
+  }
+
   return (
-    <ListingForm />
+    <div className="container mx-auto p-4">
+      <ListingForm categories={categories}/>
+    </div>
   )
 }
 

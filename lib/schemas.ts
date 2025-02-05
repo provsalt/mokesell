@@ -17,7 +17,18 @@ export const loginSchema = z.object({
 
 export const createListing = createInsertSchema(listingsTable);
 
-export type createListingType = typeof createListing._type
+export const createListingSchema = z.object({
+  title: z.string().min(1),
+  description: z.string().min(1),
+  price: z.string().regex(/^\d+(\.\d{1,2})?$/),
+  condition: z.enum(["new", "like_new", "used", "heavily_used"]),
+  categoryId: z.number().int().positive(),
+  deliveryCost: z
+    .string()
+    .regex(/^\d+(\.\d{1,2})?$/)
+    .optional(),
+  images: z.array(z.instanceof(File)).optional(),
+});
 
 export const selectListing = createSelectSchema(listingsTable)
 

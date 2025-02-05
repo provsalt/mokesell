@@ -33,7 +33,7 @@ export const listingsTable = pgTable("listings", {
   title: text().notNull(),
   description: text().notNull(),
   price: numeric({ precision: 10, scale: 2 }).notNull(),
-  condition: varchar({ length: 50 }).notNull(), // enum: ["new", "like_new", "used", "heavily used"]
+  condition: varchar({ length: 50 }).notNull(), // enum: ["new", "like_new", "used", "heavily)used"]
   categoryId: integer().references(() => categoriesTable.id),
   deliveryCost: numeric({ precision: 10, scale: 2 }),
   status: varchar({ length: 20 }).default("active"), // active/sold/expired

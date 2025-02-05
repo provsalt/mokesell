@@ -6,19 +6,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { getJWTUser } from "@/lib/auth";
 import { uploadToS3 } from "@/lib/s3";
-
-const createListingSchema = z.object({
-  title: z.string().min(1),
-  description: z.string().min(1),
-  price: z.string().regex(/^\d+(\.\d{1,2})?$/),
-  condition: z.enum(["new", "like_new", "used", "heavily used"]),
-  categoryId: z.number().int().positive(),
-  deliveryCost: z
-    .string()
-    .regex(/^\d+(\.\d{1,2})?$/)
-    .optional(),
-  images: z.array(z.instanceof(File)).optional(),
-});
+import {createListingSchema} from "@/lib/schemas";
 
 /**
  * @swagger
@@ -45,7 +33,7 @@ const createListingSchema = z.object({
  *           example: "700"
  *         condition:
  *           type: string
- *           enum: [new, like_new, used, heavily used]
+ *           enum: [new, like_new, used, heavily_used]
  *           example: "used"
  *         categoryId:
  *           type: integer
@@ -206,7 +194,7 @@ export const POST = async (request: Request) => {
  *         name: condition
  *         schema:
  *           type: string
- *           enum: [new, like_new, used, heavily used]
+ *           enum: [new, like_new, used, heavily_used]
  *       - in: query
  *         name: query
  *         schema:
