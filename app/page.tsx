@@ -140,7 +140,7 @@ export default function Home() {
 
       <div className="space-y-4">
         <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-semibold">Near You</h2>
+          <h2 className="text-2xl font-semibold">New listings</h2>
           <a href="#" className="text-blue-600 text-sm">
             See all &gt;
           </a>
