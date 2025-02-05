@@ -16,15 +16,19 @@ const s3 = new S3Client({
   forcePathStyle: true,
 });
 
-export const uploadToS3 = async (file: File) => {
-  const key = `listings/${uuidv4()}-${file.name}`;
+export const uploadToS3 = async (
+  fileBuffer: Buffer,
+  fileName: string,
+  mimeType: string,
+) => {
+  const key = `listings/${uuidv4()}-${fileName}`;
 
   await s3.send(
     new PutObjectCommand({
       Bucket: process.env.S3_BUCKET_NAME,
       Key: key,
-      Body: Buffer.from(await file.arrayBuffer()),
-      ContentType: file.type,
+      Body: fileBuffer,
+      ContentType: mimeType,
       ACL: "public-read",
     }),
   );

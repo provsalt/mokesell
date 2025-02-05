@@ -5,7 +5,8 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { getJWTUser } from "@/lib/auth";
 import { uploadToS3 } from "@/lib/s3";
-import {createListingSchema} from "@/lib/schemas";
+import { createListingSchema } from "@/lib/schemas";
+import sharp from "sharp";
 
 /**
  * @swagger
@@ -114,6 +115,8 @@ export const POST = async (request: Request) => {
       images: formData.getAll("images"),
     };
 
+    const allowedImageTypes = ["image/jpeg", "image/png", "image/webp"];
+
     const validation = createListingSchema.safeParse({
       ...body,
       images: formData.getAll("images"),
@@ -138,7 +141,23 @@ export const POST = async (request: Request) => {
 
     const imageFiles = formData.getAll("images") as File[];
     const imageUrls = await Promise.all(
-      imageFiles.map((file) => uploadToS3(file)),
+      imageFiles.map(async (file) => {
+        // Validate file type
+        if (!allowedImageTypes.includes(file.type)) {
+          throw new Error(
+            `Invalid file type: ${file.type}. Only JPEG, PNG, and WEBP formats are allowed.`,
+          );
+        }
+
+        const optimizedBuffer = await sharp(
+          Buffer.from(await file.arrayBuffer()),
+        )
+          .resize({ width: 1920, withoutEnlargement: true })
+          .webp({ quality: 80 })
+          .toBuffer();
+
+        return uploadToS3(optimizedBuffer, file.name, file.type);
+      }),
     );
 
     const [listing] = await db
