@@ -27,7 +27,7 @@ export const createListingSchema = z.object({
     .string()
     .regex(/^\d+(\.\d{1,2})?$/)
     .optional(),
-  images: z.array(z.instanceof(File)).optional(),
+  images: z.array(z.instanceof(File)).min(1, {message: "At least one image is required"}).default([]),
 });
 
 export const selectListing = createSelectSchema(listingsTable)

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import {ListingImage} from "@/components/Listing/ListingImage";
+import {Truck} from "lucide-react";
 
 interface Listing {
   id: number;
@@ -12,7 +13,7 @@ interface Listing {
   price: number;
   condition: string;
   category: string;
-  deliveryCost: string;
+  deliveryCost?: string;
   status: string;
   listedAt: string;
   seller: Seller;
@@ -51,7 +52,7 @@ const ListingPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   }
 
   const avatar = createAvatar(pixelArt, {
-    size: 48,
+    size: 64,
     seed: listing.seller.username,
   }).toDataUri();
 
@@ -67,7 +68,8 @@ const ListingPage = async ({ params }: { params: Promise<{ id: string }> }) => {
             </div>
             <p className="text-2xl font-bold">${listing.price}</p>
             <div className="flex items-center gap-2 text-sm text-gray-600">
-              <span>${listing.deliveryCost}</span>
+              <Truck />
+              {listing.deliveryCost ? <span>${listing.deliveryCost}</span> : "Free"}
               <span>Same day delivery</span>
             </div>
 
@@ -87,7 +89,7 @@ const ListingPage = async ({ params }: { params: Promise<{ id: string }> }) => {
 
             <div className="space-y-2">
               <h2 className="font-semibold">Description</h2>
-              <p className="text-gray-600">{listing.description.replace(/\n/g, "<br />")}</p>
+              <p className="text-gray-600 whitespace-pre-wrap">{listing.description}</p>
             </div>
           </div>
         </div>

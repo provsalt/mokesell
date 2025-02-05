@@ -15,6 +15,8 @@ import {Check, ChevronsUpDown} from "lucide-react";
 import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from "@/components/ui/command";
 import Image from "next/image";
 import {useEffect, useRef, useState} from "react";
+import {useToast} from "@/components/ui/use-toast";
+import {useRouter} from "next/navigation";
 
 type Category = {
   id: number
@@ -38,6 +40,7 @@ export const ListingForm = ({listing, categories}: Props) => {
     condition: listing?.condition || "new",
     categoryId: listing?.categoryId || 0,
     deliveryCost: listing?.deliveryCost || undefined,
+    images: []
   }
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -46,6 +49,10 @@ export const ListingForm = ({listing, categories}: Props) => {
   })
 
   const [previews, setPreviews] = useState<string[]>([])
+
+  const { push } = useRouter();
+
+  const { toast } = useToast()
 
   const submit = async (values: z.infer<typeof formSchema>) => {
     console.log(values)
@@ -77,12 +84,32 @@ export const ListingForm = ({listing, categories}: Props) => {
       if (!response.ok) {
         const errorData = await response.json();
         console.error(errorData)
+        toast({
+          variant: "destructive",
+          title: "Failed to create listing",
+          description:
+            errorData.error?.toString() ||
+            "Something went wrong. Please try again later.",
+        });
       }
 
-      const data = await response.json();
+      const data: {id: number} = (await response.json()).data;
       console.log("Listing saved:", data);
+      toast({
+        title: "Listing created successfully!",
+        description: "Your listing has been saved. Redirecting you to your listing page.",
+      });
+      await new Promise(r => setTimeout(r, 2000));
+      push(`/listings/${data.id}`)
     } catch (error) {
       console.error("Error posting listing:", error);
+      if (error instanceof Error) {
+        toast({
+          variant: "destructive",
+          title: "Error Occurred",
+          description: error.message ?? "Unexpected error.",
+        });
+      }
     }
   }
 
