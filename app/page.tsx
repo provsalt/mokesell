@@ -20,7 +20,7 @@ interface Listing {
 
 export default function Home() {
   const [data, setData] = useState<Listing[]>([]);
-  const [activeCategory, setActiveCategory] = useState("Electronics");
+  const [activeCategory, setActiveCategory] = useState("");
   const filteredItems = useMemo(
     () => data.filter((listing) => listing.category === activeCategory),
     [data, activeCategory],
@@ -32,6 +32,10 @@ export default function Home() {
     () => [...new Set(data.map((item) => item.category))],
     [data],
   );
+
+  useEffect(() => {
+    if (!activeCategory) setActiveCategory(categories[0]);
+  }, [categories, activeCategory]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -100,19 +104,21 @@ export default function Home() {
             </a>
           </div>
           <div className="flex gap-4 overflow-x-auto pb-2">
-            {categories.filter((s, i) => i < 5).map((category, i) => (
-              <button
-                key={i}
-                className={`px-4 py-2 text-sm rounded-full whitespace-nowrap transition ${
-                  activeCategory === category
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-200 text-gray-700"
-                }`}
-                onClick={() => setActiveCategory(category)}
-              >
-                {category}
-              </button>
-            ))}
+            {categories
+              .filter((s, i) => i < 5)
+              .map((category, i) => (
+                <button
+                  key={i}
+                  className={`px-4 py-2 text-sm rounded-full whitespace-nowrap transition ${
+                    activeCategory === category
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-200 text-gray-700"
+                  }`}
+                  onClick={() => setActiveCategory(category)}
+                >
+                  {category}
+                </button>
+              ))}
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
