@@ -17,6 +17,7 @@ export const Navbar = () => {
       setUser(undefined);
       if (typeof localStorage === "undefined") return;
       localStorage.removeItem("user");
+      fetch("/api/logout").then();
     }
   };
   const [width, setWidth] = useState<number>(
@@ -66,26 +67,20 @@ export const Navbar = () => {
             </div>
           )}
           <div className="flex gap-2">
-
-              <Button asChild className="dark:bg-transparent">
-                <Link href="/sell">
-                Sell
-
-                </Link>
-              </Button>
-              <Button asChild className="dark:bg-transparent">
-                <Link href="/user">
-                  <User />
-                </Link>
-              </Button>
-              <Button asChild className="dark:bg-transparent">
-
-                <Link href="/chats">
+            <Button asChild className="dark:bg-transparent">
+              <Link href="/sell">Sell</Link>
+            </Button>
+            <Button asChild className="dark:bg-transparent">
+              <Link href="/user">
+                <User />
+              </Link>
+            </Button>
+            <Button asChild className="dark:bg-transparent">
+              <Link href="/chats">
                 <MessageCircle />
                 <p className="sr-only">Chat</p>
-
-                </Link>
-              </Button>
+              </Link>
+            </Button>
             <Button onClick={logout} className="dark:bg-transparent">
               <LogOut />
               <p className="sr-only">Logout</p>
