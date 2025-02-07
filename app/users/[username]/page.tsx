@@ -13,6 +13,8 @@ import { formatDistance } from "date-fns";
 import { Star } from "lucide-react";
 import { ListingCard } from "@/components/Listing/ListingCard";
 
+export const revalidate = 300
+
 const ProfilePage = async ({ params }: { params: Promise<{ username: string }> }) => {
   // not using api here because lazy to encode and decode again. typesafety man, technically a backend api call lol.
   const [profile] = await db

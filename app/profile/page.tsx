@@ -18,6 +18,8 @@ import { ListingCard } from "@/components/Listing/ListingCard";
 import { ClaimDailyRewardButton } from "@/components/Reward/ClaimDailyRewardButton";
 import { Button } from "@/components/ui/button";
 
+export const revalidate = 300;
+
 const ProfilePage = async () => {
   const user = await getJWTUser(await cookies());
   if (!user) redirect("/login");
