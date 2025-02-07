@@ -37,12 +37,10 @@ export const setLastLoggedIn = async () => {
     .where(eq(usersTable.username, user.username))
     .returning({ lastOnline: usersTable.lastActive });
   if (!lastOnline.lastOnline) return;
-  console.log(
-    await kv.set(
-      `${user.username}:lastonline`,
-      lastOnline.lastOnline.toISOString(),
-      { ex: 60 * 5 },
-    ),
+  await kv.set(
+    `${user.username}:lastonline`,
+    lastOnline.lastOnline.toISOString(),
+    { ex: 60 * 5 },
   );
   return lastOnline.lastOnline;
 };
