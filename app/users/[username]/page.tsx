@@ -62,7 +62,11 @@ const ProfilePage = async ({ params }: { params: Promise<{ username: string }> }
           </div>
           <p>{profile.description || "Hey there, I'm using mokesell"}</p>
           <div className="space-y-2">
-            <p>Joined {formatDistance(Date.now(), profile.createdAt)} ago</p>
+            <div className="flex gap-2">
+              <p>Joined {formatDistance(Date.now(), profile.createdAt)} ago</p>
+              <p>Last seen {formatDistance(Date.now(), profile.lastActive || Date.UTC(1970))} ago</p>
+            </div>
+
             <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
               <div className="flex gap-2">
                 <Star className="font-normal" />

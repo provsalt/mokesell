@@ -29,6 +29,20 @@
       "when": 1737826544722,
       "tag": "0003_dazzling_tiger_shark",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1738931814759,
+      "tag": "0004_worthless_yellow_claw",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1738935072349,
+      "tag": "0005_nappy_silver_centurion",
+      "breakpoints": true
     }
   ]
 }
