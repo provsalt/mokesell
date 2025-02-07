@@ -2,6 +2,8 @@
 import { useEffect, useState, useMemo } from "react";
 import { ListingCard } from "@/components/Listing/ListingCard";
 import { motion } from "motion/react";
+import { Book, Gamepad2, Headphones, Shirt } from "lucide-react";
+import Link from "next/link";
 
 interface ListingImage {
   id: number;
@@ -32,6 +34,29 @@ export default function Home() {
     () => [...new Set(data.map((item) => item.category))],
     [data],
   );
+
+  const hardCodedCategories = [
+    {
+      name: "Books",
+      icon: <Book />,
+      id: 4,
+    },
+    {
+      name: "Clothing",
+      icon: <Shirt />,
+      id: 3,
+    },
+    {
+      name: "Electronics",
+      icon: <Gamepad2 />,
+      id: 1,
+    },
+    {
+      name: "Audio",
+      icon: <Headphones />,
+      id: 7,
+    },
+  ];
 
   useEffect(() => {
     if (!activeCategory) setActiveCategory(categories[0]);
@@ -72,13 +97,6 @@ export default function Home() {
     visible: { scale: 1, opacity: 1 },
   };
 
-  const renderPlaceholderBoxes = (count: number) =>
-    Array(count)
-      .fill(0)
-      .map((_, i) => (
-        <div key={i} className="aspect-square bg-gray-200 rounded-lg"></div>
-      ));
-
   if (error) return <div>Error!</div>;
 
   return (
@@ -90,8 +108,17 @@ export default function Home() {
             See all categories &gt;
           </a>
         </div>
-        <div className="grid grid-cols-8 gap-6 rounded-2xl">
-          {renderPlaceholderBoxes(8)}
+        <div className="grid grid-cols-3 md:grid-cols-8 gap-2 md:gap-6 rounded-2xl">
+          {hardCodedCategories.map((cat, i) => (
+            <Link
+              href={`/listings?category=${cat.id}`}
+              key={i}
+              className="aspect-square bg-gray-200 rounded-lg flex flex-col justify-center items-center"
+            >
+              <div className="text-blue-500">{cat.icon}</div>
+              {cat.name}
+            </Link>
+          ))}
         </div>
       </div>
 
