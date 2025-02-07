@@ -16,6 +16,7 @@ import { addDays, formatDistance, isBefore } from "date-fns";
 import { Mail, Star, Wallet } from "lucide-react";
 import { ListingCard } from "@/components/Listing/ListingCard";
 import { ClaimDailyRewardButton } from "@/components/Reward/ClaimDailyRewardButton";
+import { Button } from "@/components/ui/button";
 
 const ProfilePage = async () => {
   const user = await getJWTUser(await cookies());
@@ -97,7 +98,19 @@ const ProfilePage = async () => {
                 <p>${profile.balance}</p>
               </div>
             </div>
-            {canClaimDailyReward && <ClaimDailyRewardButton />}
+            {canClaimDailyReward ? (
+              <ClaimDailyRewardButton />
+            ) : (
+              profile.lastDailyReward && (
+                <Button disabled>
+                  Daily Reward in{" "}
+                  {formatDistance(
+                    addDays(profile.lastDailyReward, 1),
+                    new Date(),
+                  )}
+                </Button>
+              )
+            )}
           </div>
         </div>
       </div>
