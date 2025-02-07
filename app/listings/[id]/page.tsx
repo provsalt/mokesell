@@ -62,7 +62,7 @@ const ListingPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   return (
     <div className="md:container mx-auto p-4">
       <div className="flex flex-col md:flex-row gap-8">
-        <div className="flex-grow space-y-4">
+        <div className="w-full md:w-2/3 space-y-4">
           <ListingImage images={listing.images}/>
 
           <div className="space-y-4">
@@ -81,7 +81,7 @@ const ListingPage = async ({ params }: { params: Promise<{ id: string }> }) => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-gray-600">Condition</p>
-                  <p>{listing.condition.split(' ').map(i => i[0].toUpperCase() + i.substring(1).toLowerCase()).join(' ')}</p>
+                  <p className="capitalize">{listing.condition.replace("_", " ")}</p>
                 </div>
                 <div>
                   <p className="text-gray-600">Category</p>
