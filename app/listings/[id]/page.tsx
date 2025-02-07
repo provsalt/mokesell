@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import {ListingImage} from "@/components/Listing/ListingImage";
 import {Truck} from "lucide-react";
+import {location} from "@/lib/utils";
 
 interface Listing {
   id: number;
@@ -43,7 +44,7 @@ interface Image {
 const ListingPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const listing: Listing = (
     await (
-      await fetch(`http://localhost:3000/api/listings/${(await params).id}`)
+      await fetch(`${location}/api/listings/${(await params).id}`)
     ).json()
   ).data;
 
