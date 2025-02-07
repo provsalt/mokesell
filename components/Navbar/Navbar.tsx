@@ -81,6 +81,17 @@ export const Navbar = () => {
                 <Button asChild className="bg-blue-500 hover:bg-blue-600">
                   <Link href="/sell">Sell</Link>
                 </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="bg-gray-950 rounded-md text-gray-50 inline-flex items-center justify-center gap-2 whitespace-nowrap px-4 py-2 text-sm font-medium ">
+                    Games
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuSeparator />
+                    <Link href="/games/coinflip">
+                      <DropdownMenuItem>Mokeflip</DropdownMenuItem>
+                    </Link>
+                  </DropdownMenuContent>
+                </DropdownMenu>
                 <Button asChild className="dark:bg-transparent">
                   <Link href="/profile">
                     <User />
@@ -115,6 +126,11 @@ export const Navbar = () => {
                 </Link>
                 <Link href="/sell">
                   <DropdownMenuItem>Sell</DropdownMenuItem>
+                </Link>
+                <DropdownMenuLabel>Games</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <Link href="/games/coinflip">
+                  <DropdownMenuItem>Mokeflip</DropdownMenuItem>
                 </Link>
 
                 <DropdownMenuItem
