@@ -19,7 +19,7 @@
 #
 pre-commit:
    commands:
-      prettier:
+      biome:
          run: bunx @biomejs/biome format --write --files-ignore-unknown=true --colors=off {staged_files}
          glob: "*.{js,jsx,ts,tsx,json,css,scss,md,html}"
          stage_fixed: true
