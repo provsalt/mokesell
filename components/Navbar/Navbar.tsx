@@ -67,11 +67,11 @@ export const Navbar = () => {
             </div>
           )}
           <div className="flex gap-2">
-            <Button asChild className="dark:bg-transparent">
+            <Button asChild className="bg-blue-500 hover:bg-blue-600">
               <Link href="/sell">Sell</Link>
             </Button>
             <Button asChild className="dark:bg-transparent">
-              <Link href="/user">
+              <Link href="/profile">
                 <User />
               </Link>
             </Button>
