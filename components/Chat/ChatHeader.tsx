@@ -15,6 +15,8 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
       <div className="flex items-center gap-3">
         {listingImage ? (
           <Image
+            width={64}
+            height={64}
             src={listingImage}
             alt="Listing"
             className="w-10 h-10 rounded-full object-cover"

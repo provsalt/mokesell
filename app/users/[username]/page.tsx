@@ -44,7 +44,6 @@ const ProfilePage = async ({ params }: { params: Promise<{ username: string }> }
     seed: profile.username,
   }).toDataUri();
 
-  console.log(listings[0].images);
   return (
     <div className="p-4 space-y-4">
       <div className="bg-gray-100 p-4 flex flex-col md:flex-row items-center gap-4 md:gap-8">

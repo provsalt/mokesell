@@ -24,7 +24,6 @@ export const ChatSidebar = ({
   const [user] = useContext(UserContext);
   const { push } = useRouter();
   const params = useParams<{ id: string }>();
-  console.log(params);
   if (!user) {
     return <div>Error</div>;
   }
