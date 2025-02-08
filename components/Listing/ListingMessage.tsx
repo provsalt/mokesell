@@ -7,11 +7,13 @@ import { useState } from "react";
 
 interface ListingMessageProps {
   listingId: number;
+  sellerUsername: string;
   initialOffer: number;
 }
 
 const ListingMessage: React.FC<ListingMessageProps> = ({
   listingId,
+  sellerUsername,
   initialOffer,
 }) => {
   const router = useRouter();
@@ -21,18 +23,44 @@ const ListingMessage: React.FC<ListingMessageProps> = ({
   const startChat = async () => {
     setLoading(true);
     try {
-      console.log("Creating conversation for listing:", listingId);
+      console.log(
+        "Checking existing conversation with seller:",
+        sellerUsername,
+      );
 
-      const res = await fetch("/api/conversations", {
+      // Fetch existing conversations
+      const checkRes = await fetch(`/api/conversations?listingId=${listingId}`);
+      if (!checkRes.ok)
+        throw new Error("Failed to check existing conversations");
+
+      const { data: conversations } = await checkRes.json();
+      console.log("Fetched conversations:", conversations);
+
+      if (Array.isArray(conversations)) {
+        const existingConversation = conversations.find(
+          (conv) => conv.sellerUsername === sellerUsername,
+        );
+
+        if (existingConversation) {
+          console.log("Existing conversation found:", existingConversation.id);
+          router.push(`/chats`);
+          return;
+        }
+      } else {
+        console.error("Expected an array, but got:", conversations);
+      }
+
+      // conversation not found creates a new one
+      console.log("No existing conversation found, creating a new one");
+
+      const createRes = await fetch("/api/conversations", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ listingId }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ listingId, sellerUsername }),
       });
 
-      if (!res.ok) {
-        const errorResponse = await res.json();
+      if (!createRes.ok) {
+        const errorResponse = await createRes.json();
         console.error("API Response Error:", errorResponse);
         throw new Error(
           `Failed to create conversation: ${errorResponse.message || "Unknown error"}`,
@@ -61,7 +89,7 @@ const ListingMessage: React.FC<ListingMessageProps> = ({
           className="flex-1"
         />
         <Button className="bg-blue-500" onClick={startChat} disabled={loading}>
-          {loading ? "Processing..." : `Make Offer ($${offer})`}
+          {loading ? "Processing..." : `Make Offer`}
         </Button>
       </div>
     </div>
