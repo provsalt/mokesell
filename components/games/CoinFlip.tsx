@@ -7,6 +7,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/components/ui/use-toast";
+import { CircleHelp } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const CoinFlip = ({ balance }: { balance: number }) => {
   const [isFlipping, setIsFlipping] = useState(false);
@@ -14,12 +22,19 @@ const CoinFlip = ({ balance }: { balance: number }) => {
   const [selectedSide, setSelectedSide] = useState<"heads" | "tails">("heads");
   const [result, setResult] = useState<"heads" | "tails" | null>(null);
 
+  const { toast } = useToast();
+
   const flipCoin = async () => {
     if (isFlipping || bet <= 0) return;
 
     setIsFlipping(true);
     const result = await PlayCoinFlip(bet, selectedSide);
-    if (!result) {
+    if (!result || !result.success) {
+      toast({
+        variant: "destructive",
+        title: "Insufficient funds",
+        description: `You only have $${balance} but you're trying to bet $${bet}`,
+      });
       setIsFlipping(false);
       return;
     }
@@ -136,7 +151,22 @@ const CoinFlip = ({ balance }: { balance: number }) => {
 
           <Card>
             <CardContent className="p-4 text-center">
-              <p className="text-sm text-muted-foreground">Potential Win</p>
+              <div className="text-sm text-muted-foreground">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger className="inline-flex items-center justify-center gap-2 ">
+                      <CircleHelp size={16} />
+                      <span>Potential Win</span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>
+                        Your odds of winning is 50%, this is done securely using
+                        a cryptographically random number
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
               <p className="text-2xl font-bold">${bet.toFixed(2)}</p>
             </CardContent>
           </Card>
