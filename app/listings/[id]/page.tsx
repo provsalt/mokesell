@@ -1,9 +1,8 @@
 import { createAvatar } from "@dicebear/core";
 import { pixelArt } from "@dicebear/collection";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import {ListingImage} from "@/components/Listing/ListingImage";
+import ListingMessage from "@/components/Listing/ListingMessage";
 import {Truck} from "lucide-react";
 import {location} from "@/lib/utils";
 import {formatDistance} from "date-fns";
@@ -122,16 +121,10 @@ const ListingPage = async ({ params }: { params: Promise<{ id: string }> }) => {
               </div>
             </div>
 
-            <Button className="w-full">Message</Button>
-
-            <div className="flex gap-2">
-              <Input
-                type="number"
-                defaultValue={listing.price}
-                className="flex-1"
-              />
-              <Button className="bg-blue-500">Make Offer</Button>
-            </div>
+            <ListingMessage
+              listingId={listing.id}
+              initialOffer={listing.price}
+            />
 
             <div className="flex flex-col gap-2">
               <div>
