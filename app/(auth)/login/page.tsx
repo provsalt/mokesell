@@ -42,6 +42,7 @@ const Login = () => {
           email: values.email,
           username: db.data.username,
           description: db.data.description,
+          exp: db.data.exp
         })
       }
       if (typeof localStorage === "undefined") return;
@@ -51,6 +52,7 @@ const Login = () => {
         email: values.email,
         username: db.data.username,
         description: db.data.description,
+        exp: db.data.exp
       }))
       push("/")
     })
@@ -66,7 +68,7 @@ const Login = () => {
 
   return (
     <div className="flex flex-1 justify-center items-center">
-      <div className="shadow-sm rounded-lg outline-1 bg-white outline-black/5 p-8 flex flex-row justify-center items-center gap-6 w-[600px]">
+      <div className="shadow-sm rounded-lg outline-1 bg-white outline-black/5 p-8 flex flex-col-reverse md:flex-row justify-center items-center gap-6 w-[600px]">
       <div className="flex-1 flex flex-col justify-center items-center">
         <div className="p-4 rounded-md">
           <p className="mb-4 text-lg">Welcome back!</p>

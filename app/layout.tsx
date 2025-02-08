@@ -3,6 +3,7 @@ import "./globals.css";
 import { Navbar } from "@/components/Navbar/Navbar";
 import { UserProvider } from "@/providers/UserProvider";
 import { Toaster } from "@/components/ui/toaster";
+import { Footer } from "@/components/Footer/Footer";
 
 export const metadata: Metadata = {
   title: "Mokesell",
@@ -23,6 +24,7 @@ export default function RootLayout({
           <main className="flex flex-1 flex-col dark:bg-gray-950 dark:text-gray-50 bg-gray-50 text-gray-950 ">
             {children}
           </main>
+          <Footer />
           <Toaster />
         </UserProvider>
       </body>

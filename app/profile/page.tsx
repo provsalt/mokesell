@@ -12,9 +12,13 @@ import { desc, eq, sql } from "drizzle-orm";
 import { createAvatar } from "@dicebear/core";
 import { pixelArt } from "@dicebear/collection";
 import Image from "next/image";
-import { formatDistance } from "date-fns";
-import { Mail, Star } from "lucide-react";
+import { addDays, formatDistance, isBefore } from "date-fns";
+import { Mail, Star, Wallet } from "lucide-react";
 import { ListingCard } from "@/components/Listing/ListingCard";
+import { ClaimDailyRewardButton } from "@/components/Reward/ClaimDailyRewardButton";
+import { Button } from "@/components/ui/button";
+
+export const revalidate = 300;
 
 const ProfilePage = async () => {
   const user = await getJWTUser(await cookies());
@@ -48,7 +52,9 @@ const ProfilePage = async () => {
     seed: profile.username,
   }).toDataUri();
 
-  console.log(listings[0].images);
+  const canClaimDailyReward =
+    profile.lastDailyReward === null ||
+    isBefore(addDays(profile.lastDailyReward, 1), new Date());
   return (
     <div className="p-4 space-y-4">
       <div className="bg-gray-100 p-4 flex flex-col md:flex-row items-center gap-4 md:gap-8">
@@ -68,7 +74,18 @@ const ProfilePage = async () => {
           </div>
           <p>{profile.description || "Hey there, I'm using mokesell"}</p>
           <div className="space-y-2">
-            <p>Joined {formatDistance(Date.now(), profile.createdAt)} ago</p>
+            <div className="flex gap-2">
+              <p>Joined {formatDistance(Date.now(), profile.createdAt)} ago</p>
+              <p>
+                Last seen{" "}
+                {formatDistance(
+                  Date.now(),
+                  profile.lastActive || Date.UTC(1970),
+                )}{" "}
+                ago
+              </p>
+            </div>
+
             <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
               <div className="flex gap-2">
                 <Mail className="font-normal" />
@@ -78,7 +95,24 @@ const ProfilePage = async () => {
                 <Star className="font-normal" />
                 <p>No reviews yet</p>
               </div>
+              <div className="flex gap-2">
+                <Wallet className="font-normal" />
+                <p>${profile.balance}</p>
+              </div>
             </div>
+            {canClaimDailyReward ? (
+              <ClaimDailyRewardButton />
+            ) : (
+              profile.lastDailyReward && (
+                <Button disabled>
+                  Daily Reward in{" "}
+                  {formatDistance(
+                    addDays(profile.lastDailyReward, 1),
+                    new Date(),
+                  )}
+                </Button>
+              )
+            )}
           </div>
         </div>
       </div>
