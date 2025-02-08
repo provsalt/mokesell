@@ -123,6 +123,7 @@ const ListingPage = async ({ params }: { params: Promise<{ id: string }> }) => {
 
             <ListingMessage
               listingId={listing.id}
+              sellerUsername={listing.seller.username}
               initialOffer={listing.price}
             />
 
