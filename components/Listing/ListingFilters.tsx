@@ -52,7 +52,6 @@ export const ListingFilters = ({ categories }: ListingFiltersProps) => {
   const searchParams = useSearchParams();
 
   const [categoryCommandOpen, setCategoryCommandOpen] = useState(false);
-  console.log(searchParams.get("condition"));
   const [filters, setFilters] = useState<FilterValues>({
     category: Number(searchParams.get("category") ?? undefined),
     condition: searchParams.get("condition") ?? undefined,

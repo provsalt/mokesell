@@ -32,7 +32,7 @@ const Chat = async ({ params }: { params: Promise<{ id: string }> }) => {
   const conversation = conversationResult[0];
 
   if (
-    conversation.buyerUsername !== user.username &&
+    conversation.buyerUsername !== user.username ||
     conversation.sellerUsername !== user.username
   ) {
     redirect("/not_found") 
@@ -70,9 +70,6 @@ const Chat = async ({ params }: { params: Promise<{ id: string }> }) => {
     | null;
   if (!images) return;
   const image = images.filter((image) => image.position === 1);
-  // console.log(messages)
-  console.log(listing)
-  // const image = db.select().from(imagesTable).where(listing)
 
   return (
     <div className="flex-1 flex flex-col">
