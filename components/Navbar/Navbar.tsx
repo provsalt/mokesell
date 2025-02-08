@@ -43,7 +43,7 @@ export const Navbar = () => {
 
   const search = () => {
     if (!searchQuery) return;
-    push("/search?" + new URLSearchParams({ query: searchQuery }).toString());
+    push("/listings?" + new URLSearchParams({ query: searchQuery }).toString());
   };
 
   useEffect(() => {
