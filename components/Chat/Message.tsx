@@ -1,26 +1,21 @@
-import React, { memo } from "react";
 import { cn } from "@/lib/utils";
+import { FC, ReactNode } from "react";
 
 interface MessageProps {
-  text: string;
+  children: ReactNode;
   isSender: boolean;
 }
 
-const Message: React.FC<MessageProps> = memo(({ text, isSender }) => {
+export const Message: FC<MessageProps> = ({ children, isSender }) => {
   return (
     <div
       className={cn(
-        "max-w-[75%] md:max-w-[60%] lg:max-w-[50%] p-3 rounded-xl text-white",
+        "max-w-max p-3 px-4 rounded-xl text-white",
         "break-words",
         isSender ? "bg-blue-500 self-end" : "bg-gray-600 self-start",
       )}
-      style={{ wordBreak: "break-word" }}
     >
-      {text}
+      {children}
     </div>
   );
-});
-
-Message.displayName = "Message";
-
-export default Message;
+};

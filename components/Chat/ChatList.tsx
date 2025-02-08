@@ -8,7 +8,7 @@ interface Conversation {
 
 interface ChatListProps {
   conversations: Conversation[];
-  selectedChatId: number | null;
+  selectedChatId: number | undefined;
   onSelectChat: (id: number) => void;
 }
 
