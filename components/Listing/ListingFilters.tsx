@@ -26,6 +26,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 
 interface Category {
   name: string;
@@ -53,7 +55,9 @@ export const ListingFilters = ({ categories }: ListingFiltersProps) => {
   console.log(searchParams.get("condition"));
   const [filters, setFilters] = useState<FilterValues>({
     category: Number(searchParams.get("category") ?? undefined),
-    condition: searchParams.get("condition") ?? "all",
+    condition: searchParams.get("condition") ?? undefined,
+    minPrice: searchParams.get("minPrice") ?? undefined,
+    maxPrice: searchParams.get("maxPrice") ?? undefined,
   });
 
   useEffect(() => {
@@ -216,6 +220,54 @@ export const ListingFilters = ({ categories }: ListingFiltersProps) => {
             />
           </div>
         </div>
+      </div>
+
+      <div className="space-y-2">
+        <p>Sort By</p>
+        <Select
+          onValueChange={(value) =>
+            setFilters((prev) => ({
+              ...prev,
+              sort: value,
+            }))
+          }
+        >
+          <SelectTrigger className="w-[150px] bg-white">
+            <SelectValue
+              placeholder="Date"
+              defaultValue="date"
+              defaultChecked={true}
+            />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="date">Date</SelectItem>
+            <SelectItem value="query">Title</SelectItem>
+            <SelectItem value="condition">Condition</SelectItem>
+            <SelectItem value="price">Price</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="space-y-2">
+        <p>Order by</p>
+        <RadioGroup
+          defaultValue="desc"
+          value={filters.order}
+          onValueChange={(value) =>
+            setFilters((prevState) => ({
+              ...prevState,
+              order: value as "desc" | "asc" | undefined,
+            }))
+          }
+        >
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="asc" id="asc" />
+            <Label htmlFor="asc">Ascending</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="desc" id="desc" />
+            <Label htmlFor="desc">Descending</Label>
+          </div>
+        </RadioGroup>
       </div>
     </div>
   );
