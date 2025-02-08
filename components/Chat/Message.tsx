@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { cn } from "@/lib/utils";
 
 interface MessageProps {
@@ -6,7 +6,7 @@ interface MessageProps {
   isSender: boolean;
 }
 
-const Message: React.FC<MessageProps> = ({ text, isSender }) => {
+const Message: React.FC<MessageProps> = memo(({ text, isSender }) => {
   return (
     <div
       className={cn(
@@ -19,6 +19,8 @@ const Message: React.FC<MessageProps> = ({ text, isSender }) => {
       {text}
     </div>
   );
-};
+});
+
+Message.displayName = "Message";
 
 export default Message;
