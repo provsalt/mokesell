@@ -18,6 +18,14 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 
 interface Category {
   name: string;
@@ -42,8 +50,10 @@ export const ListingFilters = ({ categories }: ListingFiltersProps) => {
   const searchParams = useSearchParams();
 
   const [categoryCommandOpen, setCategoryCommandOpen] = useState(false);
+  console.log(searchParams.get("condition"));
   const [filters, setFilters] = useState<FilterValues>({
     category: Number(searchParams.get("category") ?? undefined),
+    condition: searchParams.get("condition") ?? "all",
   });
 
   useEffect(() => {
@@ -53,19 +63,26 @@ export const ListingFilters = ({ categories }: ListingFiltersProps) => {
     } else {
       queryString.delete("category");
     }
-    if (filters.minPrice)
+    if (filters.minPrice) {
       queryString.set("minPrice", filters.minPrice.toString());
-    if (filters.maxPrice)
+    } else {
+      queryString.delete("minPrice");
+    }
+    if (filters.maxPrice) {
       queryString.set("maxPrice", filters.maxPrice.toString());
+    } else {
+      queryString.delete("maxPrice");
+    }
     if (filters.condition)
-      queryString.set("category", filters.condition.toString());
+      queryString.set("condition", filters.condition.toString());
+    if (filters.condition === "all") queryString.delete("condition");
     if (filters.sort) queryString.set("sort", filters.sort.toString());
     if (filters.order) queryString.set("order", filters.order.toString());
     router.push("/listings?" + queryString.toString());
   }, [filters, router, searchParams]);
 
   return (
-    <div className="flex flex-col md:flex-row">
+    <div className="flex flex-col md:flex-row gap-4 md:gap-8">
       <div className="space-y-2">
         <p>Category</p>
         <Popover
@@ -129,6 +146,76 @@ export const ListingFilters = ({ categories }: ListingFiltersProps) => {
             </Command>
           </PopoverContent>
         </Popover>
+      </div>
+      <div className="space-y-2">
+        <p>Condition</p>
+        <Select
+          onValueChange={(value) =>
+            setFilters((prev) => ({
+              ...prev,
+              condition: value,
+            }))
+          }
+        >
+          <SelectTrigger className="w-[200px] bg-white">
+            <SelectValue
+              placeholder="All"
+              defaultValue="all"
+              defaultChecked={true}
+            />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="new">New</SelectItem>
+            <SelectItem value="like_new">Like New</SelectItem>
+            <SelectItem value="used">Used</SelectItem>
+            <SelectItem value="heavily_used">Heavily used</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="space-y-2">
+          <p>Minimum Price</p>
+          <div className="flex items-center gap-1">
+            <div className="flex-grow-0 px-4 py-1 bg-gray-50 rounded-lg border shadow-sm">
+              $
+            </div>
+            <Input
+              type="number"
+              step="0.01"
+              placeholder="0.00"
+              value={filters.minPrice}
+              onChange={(change) =>
+                setFilters((prev) => ({
+                  ...prev,
+                  minPrice: change.target.value,
+                }))
+              }
+              className="w-full bg-white"
+            />
+          </div>
+        </div>{" "}
+        <div className="space-y-2">
+          <p>Maximum Price</p>
+          <div className="flex items-center gap-1">
+            <div className="flex-grow-0 px-4 py-1 bg-gray-50 rounded-lg border shadow-sm">
+              $
+            </div>
+            <Input
+              type="number"
+              step="0.01"
+              placeholder="0.00"
+              value={filters.maxPrice}
+              onChange={(change) =>
+                setFilters((prev) => ({
+                  ...prev,
+                  maxPrice: change.target.value,
+                }))
+              }
+              className="w-full bg-white"
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

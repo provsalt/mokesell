@@ -21,13 +21,15 @@ const Listings = async (props: {
     order: string | undefined;
   } = {
     query: searchParams["query"],
-    minPrice: searchParams["min"],
-    maxPrice: searchParams["max"],
+    minPrice: searchParams["minPrice"],
+    maxPrice: searchParams["maxPrice"],
     category: searchParams["category"],
     condition: searchParams["condition"],
     sort: searchParams["sort"],
     order: searchParams["order"],
   };
+
+  if (parameters.condition === "all") parameters.condition = undefined;
 
   const columnMapping: Record<string, PgColumn> = {
     query: listingsTable.title,
@@ -89,7 +91,7 @@ const Listings = async (props: {
           <ListingFilters categories={categories} />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-7 gap-2">
           {listings.length > 0 ? (
             listings.map((listing) => {
               const images = listing.images as
