@@ -53,6 +53,26 @@ export const Navbar = () => {
     };
   }, []);
 
+  const SearchBar = () => {
+    return (
+      <form onSubmit={search} className="flex">
+        <Input
+          className="min-w-[25vw]"
+          onInput={(e) => {
+            const target = e.target as HTMLInputElement;
+            setSearchQuery(target.value);
+          }}
+          autoComplete="off"
+          value={searchQuery}
+          placeholder="Search"
+        />
+        <Button type="submit">
+          <Search />
+        </Button>
+      </form>
+    );
+  };
+
   if (user) {
     return (
       <nav className="flex flex-col p-4">
@@ -63,20 +83,7 @@ export const Navbar = () => {
           </Link>
           {width >= 768 && (
             <>
-              <div className="flex">
-                <Input
-                  className="min-w-[25vw]"
-                  onInput={(e) => {
-                    const target = e.target as HTMLInputElement;
-                    setSearchQuery(target.value);
-                  }}
-                  value={searchQuery}
-                  placeholder="Search"
-                />
-                <Button onClick={search}>
-                  <Search />
-                </Button>
-              </div>
+              <SearchBar />
               <div className="flex gap-2">
                 <Button asChild className="bg-blue-500 hover:bg-blue-600">
                   <Link href="/sell">Sell</Link>
@@ -144,22 +151,7 @@ export const Navbar = () => {
             </DropdownMenu>
           )}
         </div>
-        {width <= 768 && (
-          <div className="flex">
-            <Input
-              className="min-w-[25vw]"
-              onInput={(e) => {
-                const target = e.target as HTMLInputElement;
-                setSearchQuery(target.value);
-              }}
-              value={searchQuery}
-              placeholder="Search"
-            />
-            <Button onClick={search}>
-              <Search />
-            </Button>
-          </div>
-        )}
+        {width <= 768 && <SearchBar />}
       </nav>
     );
   }
@@ -171,22 +163,7 @@ export const Navbar = () => {
           <span className="font-bold text-lg">Mokesell</span>
         </Link>
 
-        {width >= 768 && (
-          <div className="flex">
-            <Input
-              className="min-w-[25vw]"
-              onInput={(e) => {
-                const target = e.target as HTMLInputElement;
-                setSearchQuery(target.value);
-              }}
-              value={searchQuery}
-              placeholder="Search"
-            />
-            <Button onClick={search}>
-              <Search />
-            </Button>
-          </div>
-        )}
+        {width >= 768 && <SearchBar />}
         <div className="flex gap-4">
           <Link href="/signup">
             <Button className="dark:bg-transparent text-gray-50 dark:text-gray-50">
@@ -198,22 +175,7 @@ export const Navbar = () => {
           </Link>
         </div>
       </div>
-      {width <= 768 && (
-        <div className="flex">
-          <Input
-            className="min-w-[25vw]"
-            onInput={(e) => {
-              const target = e.target as HTMLInputElement;
-              setSearchQuery(target.value);
-            }}
-            value={searchQuery}
-            placeholder="Search"
-          />
-          <Button onClick={search}>
-            <Search />
-          </Button>
-        </div>
-      )}
+      {width <= 768 && <SearchBar />}
     </nav>
   );
 };
