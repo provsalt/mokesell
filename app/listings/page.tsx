@@ -1,15 +1,25 @@
 import { ListingFilters } from "@/components/Listing/ListingFilters";
 import { db } from "@/db";
 import { categoriesTable, imagesTable, listingsTable } from "@/db/schema";
-import { and, desc, eq, gte, ilike, lte, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gte, ilike, lte, sql } from "drizzle-orm";
 import { ListingCard } from "@/components/Listing/ListingCard";
+import { PgColumn } from "drizzle-orm/pg-core";
 
-const Listings = async ({
-  searchParams,
-}: { searchParams?: { [key: string]: string | undefined } }) => {
+const Listings = async (props: {
+  searchParams?: Promise<{ [key: string]: string | undefined }>;
+}) => {
   const categories = await db.select().from(categoriesTable);
-  if (!searchParams) return;
-  const parameters = {
+  if (!props.searchParams) return;
+  const searchParams = await props.searchParams;
+  const parameters: {
+    query: string | undefined;
+    minPrice: string | undefined;
+    maxPrice: string | undefined;
+    category: string | undefined;
+    condition: string | undefined;
+    sort: string | undefined;
+    order: string | undefined;
+  } = {
     query: searchParams["query"],
     minPrice: searchParams["min"],
     maxPrice: searchParams["max"],
@@ -18,6 +28,18 @@ const Listings = async ({
     sort: searchParams["sort"],
     order: searchParams["order"],
   };
+
+  const columnMapping: Record<string, PgColumn> = {
+    query: listingsTable.title,
+    price: listingsTable.price,
+    condition: listingsTable.condition,
+    date: listingsTable.listedAt,
+  };
+
+  const sortColumn =
+    parameters.sort && columnMapping[parameters.sort ?? "date"]
+      ? columnMapping[parameters.sort]
+      : listingsTable.listedAt;
 
   const listings = await db
     .select({
@@ -56,36 +78,39 @@ const Listings = async ({
       ),
     )
     .groupBy(listingsTable.id, categoriesTable.name)
-    .orderBy(desc(listingsTable.listedAt));
+    .orderBy(parameters.order === "asc" ? asc(sortColumn) : desc(sortColumn));
 
   return (
     <div className="p-4">
       <div className="container mx-auto space-y-4">
         <h1 className="text-3xl font-bold">Listings</h1>
-        <div className="bg-gray-200 rounded-xl p-5">
+        <div className="bg-gray-200 rounded-xl p-5 space-y-4">
           <h3 className="text-xl font-semibold">Filters</h3>
-          {searchParams["query"]}
           <ListingFilters categories={categories} />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-5">
-          {listings.map((listing) => {
-            const images = listing.images as
-              | { id: number; url: string; position: number }[]
-              | null;
-            if (!images) return;
-            const image = images.filter((image) => image.position === 1);
-            return (
-              <ListingCard
-                id={listing.id}
-                name={listing.title}
-                condition={listing.condition}
-                price={"$" + listing.price}
-                image={image[0].url ?? ""}
-                key={listing.id}
-              />
-            );
-          })}
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-2">
+          {listings.length > 0 ? (
+            listings.map((listing) => {
+              const images = listing.images as
+                | { id: number; url: string; position: number }[]
+                | null;
+              if (!images) return;
+              const image = images.filter((image) => image.position === 1);
+              return (
+                <ListingCard
+                  id={listing.id}
+                  name={listing.title}
+                  condition={listing.condition}
+                  price={"$" + listing.price}
+                  image={image[0].url ?? ""}
+                  key={listing.id}
+                />
+              );
+            })
+          ) : (
+            <div>No listings found</div>
+          )}
         </div>
       </div>
     </div>

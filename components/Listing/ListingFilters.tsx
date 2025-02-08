@@ -65,8 +65,8 @@ export const ListingFilters = ({ categories }: ListingFiltersProps) => {
   }, [filters, router, searchParams]);
 
   return (
-    <div>
-      <div>
+    <div className="flex flex-col md:flex-row">
+      <div className="space-y-2">
         <p>Category</p>
         <Popover
           open={categoryCommandOpen}
