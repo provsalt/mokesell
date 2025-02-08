@@ -30,8 +30,8 @@ const Signup = () => {
     fetch("/api/signup", {
       body: JSON.stringify(values),
       method: "POST"
-    }).then(r => {
-      console.log(r)
+    }).then(async r => {
+      const exp = (await r.json()).data.exp
       if (r.status === 200) {
         if (setUser) {
           setUser({
@@ -39,6 +39,7 @@ const Signup = () => {
             email: values.email,
             username: values.username,
             description: "",
+            exp: exp
           })
         }
         if (typeof localStorage === "undefined") return;
@@ -47,7 +48,8 @@ const Signup = () => {
           name: values.name,
           email: values.email,
           username: values.username,
-          description: ""
+          description: "",
+          exp: exp
         }))
         push("/")
       }
