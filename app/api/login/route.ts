@@ -5,6 +5,7 @@ import {usersTable} from "@/db/schema";
 import bcrypt from "bcrypt";
 import {SignJWT} from "jose";
 import {sql} from "drizzle-orm";
+import {addDays} from "date-fns";
 
 /**
  * @swagger
@@ -101,6 +102,7 @@ export const POST = async (request: Request): Promise<Response> => {
     }
 
     const secret = new TextEncoder().encode(process.env.JWT_SECRET || "");
+    const exp = addDays(new Date(), 1);
     const tok = await new SignJWT({
       sub: data.username,
       name: data.name
@@ -113,13 +115,14 @@ export const POST = async (request: Request): Promise<Response> => {
         username: data.username,
         name: data.name,
         email: data.email,
-        description: data.description
+        description: data.description,
+        exp: exp.getTime()
       }
     }), {
       status: 200,
       headers: {
         "content-type": "application/json",
-        "set-cookie": `token=${tok}; path=/; HttpOnly; SameSite=Strict; Secure;`,
+        "set-cookie": `token=${tok}; path=/; HttpOnly; SameSite=Strict; Secure; expires=${exp.toUTCString()};`,
       }
     })
   } catch (e) {
