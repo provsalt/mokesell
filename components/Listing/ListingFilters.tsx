@@ -86,9 +86,9 @@ export const ListingFilters = ({ categories }: ListingFiltersProps) => {
   }, [filters, router, searchParams]);
 
   return (
-    <div className="flex flex-col md:flex-row gap-4 md:gap-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       <div className="space-y-2">
-        <p>Category</p>
+        <p className="text-sm font-medium">Category</p>
         <Popover
           open={categoryCommandOpen}
           onOpenChange={setCategoryCommandOpen}
@@ -98,15 +98,15 @@ export const ListingFilters = ({ categories }: ListingFiltersProps) => {
               variant="outline"
               role="combobox"
               aria-expanded={categoryCommandOpen}
-              className="w-[200px] justify-between"
+              className="w-full justify-between"
             >
               {filters.category
                 ? categories.find((cat) => cat.id === filters.category)?.name
                 : "All"}
-              <ChevronsUpDown className="opacity-50" />
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-[200px] p-0">
+          <PopoverContent className="w-full p-0">
             <Command>
               <CommandInput
                 placeholder="Search categories..."
@@ -151,8 +151,9 @@ export const ListingFilters = ({ categories }: ListingFiltersProps) => {
           </PopoverContent>
         </Popover>
       </div>
+
       <div className="space-y-2">
-        <p>Condition</p>
+        <p className="text-sm font-medium">Condition</p>
         <Select
           onValueChange={(value) =>
             setFilters((prev) => ({
@@ -160,60 +161,55 @@ export const ListingFilters = ({ categories }: ListingFiltersProps) => {
               condition: value,
             }))
           }
+          value={filters.condition}
         >
-          <SelectTrigger className="w-[200px] bg-white">
-            <SelectValue
-              placeholder="All"
-              defaultValue="all"
-              defaultChecked={true}
-            />
+          <SelectTrigger className="w-full bg-white">
+            <SelectValue placeholder="All" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All</SelectItem>
             <SelectItem value="new">New</SelectItem>
             <SelectItem value="like_new">Like New</SelectItem>
             <SelectItem value="used">Used</SelectItem>
-            <SelectItem value="heavily_used">Heavily used</SelectItem>
+            <SelectItem value="heavily_used">Heavily Used</SelectItem>
           </SelectContent>
         </Select>
       </div>
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="space-y-2">
-          <p>Minimum Price</p>
-          <div className="flex items-center gap-1">
-            <div className="flex-grow-0 px-4 py-1 bg-gray-50 rounded-lg border shadow-sm">
+
+      <div className="space-y-2 sm:col-span-2 lg:col-span-1">
+        <p className="text-sm font-medium">Price Range</p>
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center gap-2">
+            <div className="flex-grow-0 px-3 py-1 bg-gray-50 rounded-lg border shadow-sm">
               $
             </div>
             <Input
               type="number"
               step="0.01"
-              placeholder="0.00"
+              placeholder="Min Price"
               value={filters.minPrice}
-              onChange={(change) =>
+              onChange={(e) =>
                 setFilters((prev) => ({
                   ...prev,
-                  minPrice: change.target.value,
+                  minPrice: e.target.value,
                 }))
               }
               className="w-full bg-white"
             />
           </div>
-        </div>{" "}
-        <div className="space-y-2">
-          <p>Maximum Price</p>
-          <div className="flex items-center gap-1">
-            <div className="flex-grow-0 px-4 py-1 bg-gray-50 rounded-lg border shadow-sm">
+          <div className="flex items-center gap-2">
+            <div className="flex-grow-0 px-3 py-1 bg-gray-50 rounded-lg border shadow-sm">
               $
             </div>
             <Input
               type="number"
               step="0.01"
-              placeholder="0.00"
+              placeholder="Max Price"
               value={filters.maxPrice}
-              onChange={(change) =>
+              onChange={(e) =>
                 setFilters((prev) => ({
                   ...prev,
-                  maxPrice: change.target.value,
+                  maxPrice: e.target.value,
                 }))
               }
               className="w-full bg-white"
@@ -222,52 +218,53 @@ export const ListingFilters = ({ categories }: ListingFiltersProps) => {
         </div>
       </div>
 
-      <div className="space-y-2">
-        <p>Sort By</p>
-        <Select
-          onValueChange={(value) =>
-            setFilters((prev) => ({
-              ...prev,
-              sort: value,
-            }))
-          }
-        >
-          <SelectTrigger className="w-[150px] bg-white">
-            <SelectValue
-              placeholder="Date"
-              defaultValue="date"
-              defaultChecked={true}
-            />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="date">Date</SelectItem>
-            <SelectItem value="query">Title</SelectItem>
-            <SelectItem value="condition">Condition</SelectItem>
-            <SelectItem value="price">Price</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-      <div className="space-y-2">
-        <p>Order by</p>
-        <RadioGroup
-          defaultValue="desc"
-          value={filters.order}
-          onValueChange={(value) =>
-            setFilters((prevState) => ({
-              ...prevState,
-              order: value as "desc" | "asc" | undefined,
-            }))
-          }
-        >
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="asc" id="asc" />
-            <Label htmlFor="asc">Ascending</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="desc" id="desc" />
-            <Label htmlFor="desc">Descending</Label>
-          </div>
-        </RadioGroup>
+      <div className="space-y-4 sm:col-span-2 lg:col-span-1">
+        <div className="space-y-2">
+          <p className="text-sm font-medium">Sort By</p>
+          <Select
+            onValueChange={(value) =>
+              setFilters((prev) => ({
+                ...prev,
+                sort: value,
+              }))
+            }
+            value={filters.sort}
+          >
+            <SelectTrigger className="w-full bg-white">
+              <SelectValue placeholder="Date" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="date">Date</SelectItem>
+              <SelectItem value="query">Title</SelectItem>
+              <SelectItem value="condition">Condition</SelectItem>
+              <SelectItem value="price">Price</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <p className="text-sm font-medium">Order</p>
+          <RadioGroup
+            defaultValue="desc"
+            value={filters.order}
+            onValueChange={(value) =>
+              setFilters((prev) => ({
+                ...prev,
+                order: value as "desc" | "asc" | undefined,
+              }))
+            }
+            className="flex flex-col space-y-1"
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="asc" id="asc" />
+              <Label htmlFor="asc">Ascending</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="desc" id="desc" />
+              <Label htmlFor="desc">Descending</Label>
+            </div>
+          </RadioGroup>
+        </div>
       </div>
     </div>
   );
