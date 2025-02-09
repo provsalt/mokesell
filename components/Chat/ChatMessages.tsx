@@ -25,7 +25,7 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({
     >
       <div className="flex flex-col space-y-2">
         {messages.length === 0 ? (
-          <p className="text-center text-gray-500">Loading messages...</p>
+          <p className="text-center text-gray-500">No messages found</p>
         ) : (
           messages.map((msg) => (
             <Message
