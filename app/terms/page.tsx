@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button";
 
 export default function TermsOfService() {
   return (
-    <div className="p-6 max-w-3xl mx-auto">
-      <h1 className="text-3xl font-bold mb-4">Terms of Service</h1>
+    <div className="p-6 px-4 max-w-3xl w-full mx-auto">
+      <h1 className="text-3xl font-bold mb-4 text-center">Terms of Service</h1>
 
       <section className="mb-6">
         <h2 className="text-xl font-semibold">1. Introduction</h2>

@@ -15,10 +15,10 @@ const TeamAnimation = () => {
 
 export default function Home() {
   return (
-    <div className="p-6 max-w-3xl mx-auto">
+    <div className="p-6 max-w-screen-md mx-auto flex flex-col items-center text-center">
       <h1 className="text-3xl font-bold mb-4">About Mokesell</h1>
 
-      <section className="mb-6">
+      <section className="mb-6 w-full">
         <h2 className="text-xl font-semibold">Who We Are</h2>
         <p className="mt-2">
           Mokesell is a dynamic online marketplace designed to help you buy and
@@ -29,7 +29,7 @@ export default function Home() {
         </p>
       </section>
 
-      <section className="mb-6">
+      <section className="mb-6 w-full">
         <h2 className="text-xl font-semibold">Our Mission</h2>
         <p className="mt-2">
           At Mokesell, we believe in the power of sustainable shopping. Our
@@ -38,12 +38,14 @@ export default function Home() {
           that every item finds a new home instead of ending up in landfills.
         </p>
       </section>
-      <div className="w-md h-md flex justify-center items-center">
+
+      <div className="w-full flex justify-center items-center mb-6">
         {TeamAnimation()}
       </div>
-      <section className="mb-6">
+
+      <section className="mb-6 w-full">
         <h2 className="text-xl font-semibold">Why Choose Mokesell?</h2>
-        <ul className="list-disc list-inside mt-2">
+        <ul className="list-disc list-inside mt-2 text-left max-w-lg mx-auto">
           <li>
             <strong>Easy Listing & Selling</strong>: Snap a picture, set a
             price, and connect with buyers in minutes.
@@ -63,7 +65,7 @@ export default function Home() {
         </ul>
       </section>
 
-      <section className="text-center mt-6">
+      <section className="mt-6 w-full">
         <h2 className="text-xl font-semibold">Join Us Today!</h2>
         <p className="mt-2">
           Start selling or buying today on Mokesell and be part of a community
