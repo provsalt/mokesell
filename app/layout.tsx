@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   title: "Mokesell",
 };
 
+export const revalidate = 60;
+
 export default function RootLayout({
   children,
 }: Readonly<{

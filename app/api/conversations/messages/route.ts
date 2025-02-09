@@ -1,10 +1,11 @@
 import { z } from "zod";
 import { db } from "@/db";
 import { messagesTable, conversationTable } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { getJWTUser } from "@/lib/auth";
+import { revalidatePath } from "next/cache";
 
 const createMessageSchema = z.object({
   content: z.string().min(1),
@@ -117,6 +118,12 @@ export const POST = async (request: Request) => {
         senderUsername: user.username,
       })
       .returning();
+    await db
+      .update(conversationTable)
+      .set({ updatedAt: sql`NOW()` })
+      .where(eq(conversationTable.id, conversationId));
+    revalidatePath("/chats", "layout");
+    revalidatePath("/chats/[id]", "layout");
 
     return NextResponse.json({ data: message }, { status: 201 });
   } catch (error) {
