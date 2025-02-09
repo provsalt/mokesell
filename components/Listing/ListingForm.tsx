@@ -1,5 +1,6 @@
 // using client here since the full form requires mostly client side interactions
 "use client";
+export const runtime = "nodejs";
 import { createListingSchema } from "@/lib/schemas";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
