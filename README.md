@@ -2,6 +2,7 @@
 ![Mokesell Icon](public/mokesell.png)
 
 Deployed on: https://fedmokesell.vercel.app/
+Mokesell pitch: https://drive.google.com/drive/folders/15OLV1jOVGYTkfwXuYXd-uffNSRbyZO8W?usp=drive_link
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
