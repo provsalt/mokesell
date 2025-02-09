@@ -94,7 +94,7 @@ const ListingPage = async ({ params }: { params: Promise<{ id: string }> }) => {
           <div className="bg-gray-100 rounded-lg p-4 flex flex-col gap-4">
             <div className="flex items-center gap-3">
               <Link href={`/users/${listing.seller.username}`}>
-                <Avatar username={listing.seller.name} size={64}/>
+                <Avatar username={listing.seller.username} size={64}/>
               </Link>
               <div>
                 <div className="flex gap-0.5 flex-col">
@@ -136,23 +136,6 @@ const ListingPage = async ({ params }: { params: Promise<{ id: string }> }) => {
               {listing.seller.reviews && (
                 <h3 className="font-semibold">Reviews</h3>
               )}
-              {listing.seller.reviews &&
-                listing.seller.reviews.map((review, index) => (
-                  <div key={index} className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      {/*TODO: calculate image with dicebear*/}
-                      {/*<img alt="" className="w-8 h-8 rounded-full" />*/}
-                      <div>
-                        <p className="font-semibold">{listing.seller.name}</p>
-                        <div className="flex items-center gap-1">
-                          <span>{"★".repeat(review.rating)}</span>
-                          <span className="text-gray-600">{review.date}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <p className="text-sm text-gray-600">{review.comment}</p>
-                  </div>
-                ))}
             </div>
           </div>
         </div>

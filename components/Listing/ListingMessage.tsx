@@ -3,7 +3,9 @@
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { FC, useContext, useState } from "react";
+import { UserContext } from "@/providers/UserProvider";
+import { useToast } from "@/components/ui/use-toast";
 
 interface ListingMessageProps {
   listingId: number;
@@ -11,7 +13,14 @@ interface ListingMessageProps {
   initialOffer: number;
 }
 
-const ListingMessage: React.FC<ListingMessageProps> = ({
+interface Conversation {
+  id: number;
+  listingId: number;
+  buyerUsername: string;
+  sellerUsername: string;
+}
+
+const ListingMessage: FC<ListingMessageProps> = ({
   listingId,
   sellerUsername,
   initialOffer,
@@ -19,26 +28,30 @@ const ListingMessage: React.FC<ListingMessageProps> = ({
   const router = useRouter();
   const [offer, setOffer] = useState(initialOffer);
   const [loading, setLoading] = useState(false);
+  const [user] = useContext(UserContext);
+  const { toast } = useToast();
 
   const startChat = async () => {
     setLoading(true);
     try {
-      console.log(
-        "Checking existing conversation with seller:",
-        sellerUsername,
-      );
+      if (user?.username === sellerUsername) {
+        toast({ variant: "destructive", title: "You can't message yourself" });
+        return;
+      }
 
       // Fetch existing conversations
-      const checkRes = await fetch(`/api/conversations?listingId=${listingId}`);
+      const checkRes = await fetch("/api/conversations");
       if (!checkRes.ok)
         throw new Error("Failed to check existing conversations");
 
-      const { data: conversations } = await checkRes.json();
+      const conversations: Conversation[] = (await checkRes.json()).data;
       console.log("Fetched conversations:", conversations);
 
       if (Array.isArray(conversations)) {
         const existingConversation = conversations.find(
-          (conv) => conv.sellerUsername === sellerUsername,
+          (conv) =>
+            conv.sellerUsername === sellerUsername &&
+            conv.listingId === listingId,
         );
 
         if (existingConversation) {
