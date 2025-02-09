@@ -1,5 +1,3 @@
-import { createAvatar } from "@dicebear/core";
-import { pixelArt } from "@dicebear/collection";
 import Image from "next/image";
 import {ListingImage} from "@/components/Listing/ListingImage";
 import ListingMessage from "@/components/Listing/ListingMessage";
@@ -7,6 +5,7 @@ import {Truck} from "lucide-react";
 import {location} from "@/lib/utils";
 import {formatDistance} from "date-fns";
 import Link from "next/link";
+import {Avatar} from "@/components/Avatar/Avatar";
 
 interface Listing {
   id: number;
@@ -53,11 +52,6 @@ const ListingPage = async ({ params }: { params: Promise<{ id: string }> }) => {
     return <div>Loading...</div>;
   }
 
-  const avatar = createAvatar(pixelArt, {
-    size: 64,
-    seed: listing.seller.username,
-  }).toDataUri();
-
   return (
     <div className="md:container mx-auto p-4">
       <div className="flex flex-col md:flex-row gap-8">
@@ -100,13 +94,7 @@ const ListingPage = async ({ params }: { params: Promise<{ id: string }> }) => {
           <div className="bg-gray-100 rounded-lg p-4 flex flex-col gap-4">
             <div className="flex items-center gap-3">
               <Link href={`/users/${listing.seller.username}`}>
-                <Image
-                  src={avatar}
-                  width={64}
-                  height={64}
-                  alt={listing.seller.name}
-                  className="w-12 h-12 rounded-full"
-                />
+                <Avatar username={listing.seller.name} size={64}/>
               </Link>
               <div>
                 <div className="flex gap-0.5 flex-col">

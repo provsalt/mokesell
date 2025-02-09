@@ -1,7 +1,9 @@
 import React, { memo } from "react";
+import { Avatar } from "@/components/Avatar/Avatar";
 
 interface Conversation {
   id: number;
+  listing: string;
   username: string;
   lastMessage: string;
 }
@@ -24,9 +26,9 @@ const ChatList: React.FC<ChatListProps> = memo(
               selectedChatId === chat.id ? "bg-gray-200" : "hover:bg-gray-100"
             }`}
           >
-            <div className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0"></div>
+            <Avatar username={chat.username} size={48} />
             <div className="min-w-0">
-              <div className="font-medium truncate">{chat.username}</div>
+              <div className="font-semibold truncate">@{chat.username}</div>
               <div className="text-gray-500 text-sm truncate">
                 {chat.lastMessage}
               </div>
