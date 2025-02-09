@@ -16,15 +16,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import SearchBar from "@/components/Navbar/Searchbar";
+import { useRouter } from "next/navigation";
 
 export const Navbar = () => {
   const [user, setUser] = useContext(UserContext);
+  const { push } = useRouter();
   const logout = () => {
     if (setUser) {
       setUser(undefined);
       if (typeof localStorage === "undefined") return;
       localStorage.removeItem("user");
-      fetch("/api/logout").then();
+      fetch("/api/logout").then(() => push("/"));
     }
   };
 
