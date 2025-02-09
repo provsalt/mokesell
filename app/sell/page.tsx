@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 const SellPage = async () => {
   const auth = await getJWTUser(await cookies());
   const categories: { id: number; name: string }[] = (
-    await (await fetch("http://localhost:3000/api/categories")).json()
+    await (await fetch(`${location}/api/categories`)).json()
   ).data;
   if (!auth) {
     redirect("/login");
