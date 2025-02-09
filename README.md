@@ -50,6 +50,21 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 ### Terms of Service
 ![tos](screenshots/Screenshot%202025-02-09%20224756.png)
 
+## Technologies used
+- [Next.js](https://nextjs.org) - React framework.
+- [TypeScript + Zod](https://www.typescriptlang.org) - Static typing.
+- [Tailwind CSS](https://tailwindcss.com) - Utility-first CSS framework.
+- [Drizzle](https://drizzle.dev) - Database migrations.
+- [Vercel](https://vercel.com) - Deployment.
+- [S3](https://aws.amazon.com/s3) - Image storage.
+- [shadcn/ui](https://ui.shadcn.com/) - UI components for tailwinds.
+- [Stripe](https://stripe.com) - Payment processing.
+- [Redis](https://redis.io) - Caching.
+- [Postgres](https://www.postgresql.org) - Database.
+- [OpenAI](https://openai.com) - AI for support chat.
+- [Lottie](https://lottiefiles.com) - Animation.
+- [Motion](https://www.framer.com/motion) - Animation.
+
 ## Getting Started
 This project uses bun for package management. Other package managers may not be supported.
 
@@ -88,6 +103,8 @@ Install the hooks which will run prettier on commit.
 ```bash
 lefthook install
 ```
+
+Navigate to localhost:3000/api/api-doc to view the API documentation.
 
 ## Testing
 Server sided validation messages on login and signup is non-existent
