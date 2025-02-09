@@ -69,10 +69,10 @@ export const Footer = () => {
                 <Link className="text-lg font-medium" href="/about">
                   Help Center
                 </Link>
-                <Link className="text-lg font-medium" href="/news">
+                <Link className="text-lg font-medium" href="/contact">
                   Contact Us
                 </Link>
-                <Link className="text-lg font-medium" href="/careers">
+                <Link className="text-lg font-medium" href="/guidelines">
                   Seller & Buyer Guidelines
                 </Link>
               </div>
