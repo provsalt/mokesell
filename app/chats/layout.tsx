@@ -32,7 +32,7 @@ const ChatLayout = async ({
     )
     .orderBy(desc(conversationTable.updatedAt));
   return (
-    <div className="flex flex-1 overflow-hidden pt-5">
+    <div className="flex flex-1 pt-5">
       <ChatSidebar conversations={conversations} />
       {children}
     </div>

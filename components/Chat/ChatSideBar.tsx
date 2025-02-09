@@ -41,7 +41,7 @@ export const ChatSidebar = ({
         className={`fixed lg:static inset-y-0 left-0 w-full sm:w-80 lg:w-96 
                 transform lg:transform-none transition-transform duration-300 ease-in-out
                 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-                bg-gray-50 border-r z-40 flex flex-col`}
+                bg-gray-50 border-r z-10 flex flex-col`}
       >
         <div className="p-4 bg-gray-50 z-10">
           <div className="relative">

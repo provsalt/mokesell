@@ -11,7 +11,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
   listingImage,
 }) => {
   return (
-    <div className="p-4 border-b bg-white z-30">
+    <div className="p-4 border-b bg-white">
       <div className="flex items-center gap-3">
         {listingImage ? (
           <Image

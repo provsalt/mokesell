@@ -1,5 +1,3 @@
-"use server";
-
 import { db } from "@/db";
 import { conversationTable, imagesTable, listingsTable, messagesTable } from "@/db/schema";
 import {eq, sql } from "drizzle-orm";
@@ -8,6 +6,8 @@ import { getJWTUser } from "@/lib/auth";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import {ChatContent} from "@/components/Chat/ChatContent";
+
+export const revalidate = 3600;
 
 const Chat = async ({ params }: { params: Promise<{ id: string }> }) => {
   const user = await getJWTUser(await cookies());
