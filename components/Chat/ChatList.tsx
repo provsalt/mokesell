@@ -3,7 +3,6 @@ import { Avatar } from "@/components/Avatar/Avatar";
 
 interface Conversation {
   id: number;
-  listing: string;
   username: string;
   lastMessage: string;
 }
