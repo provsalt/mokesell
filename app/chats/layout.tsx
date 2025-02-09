@@ -3,7 +3,7 @@ import { conversationTable } from "@/db/schema";
 import { eq, or, desc } from "drizzle-orm";
 import { getJWTUser } from "@/lib/auth";
 import { cookies } from "next/headers";
-import { ChatSidebar } from "@/components/Chat/ChatSideBar";
+import { ChatSidebar } from "@/components/Chat/ChatSidebar";
 
 const ChatLayout = async ({
   children,
@@ -32,7 +32,7 @@ const ChatLayout = async ({
     )
     .orderBy(desc(conversationTable.updatedAt));
   return (
-    <div className="flex flex-1 overflow-hidden pt-5">
+    <div className="flex flex-1 pt-2">
       <ChatSidebar conversations={conversations} />
       {children}
     </div>

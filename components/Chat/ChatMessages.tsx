@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Message } from "@/components/Chat/Message";
 
 interface ChatMessagesProps {
@@ -10,22 +10,33 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({
   messages,
   currentUsername,
 }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  }, [messages]);
+
   return (
-    <div className="flex-1 p-4 overflow-y-auto">
-      {messages.length === 0 ? (
-        <p className="text-center text-gray-500">Loading messages...</p>
-      ) : (
-        <div className="flex flex-col  flex-1">
-          {messages.map((msg) => (
+    <div
+      ref={containerRef}
+      className="flex-1 max-h-[70svh] overflow-y-auto p-4"
+    >
+      <div className="flex flex-col space-y-2">
+        {messages.length === 0 ? (
+          <p className="text-center text-gray-500">No messages found</p>
+        ) : (
+          messages.map((msg) => (
             <Message
               key={msg.id}
               isSender={msg.senderUsername === currentUsername}
             >
               {msg.content}
             </Message>
-          ))}
-        </div>
-      )}
+          ))
+        )}
+      </div>
     </div>
   );
 };
