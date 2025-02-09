@@ -1,3 +1,18 @@
+"use client";
+
+import React from "react";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+
+const TeamAnimation = () => {
+  return (
+    <DotLottieReact
+      src="https://lottie.host/90d693fa-b265-4caa-922d-d686914eb52a/20T2S4G476.lottie"
+      loop
+      autoplay
+    />
+  );
+};
+
 export default function Home() {
   return (
     <div className="p-6 max-w-3xl mx-auto">
@@ -23,7 +38,9 @@ export default function Home() {
           that every item finds a new home instead of ending up in landfills.
         </p>
       </section>
-
+      <div className="w-md h-md flex justify-center items-center">
+        {TeamAnimation()}
+      </div>
       <section className="mb-6">
         <h2 className="text-xl font-semibold">Why Choose Mokesell?</h2>
         <ul className="list-disc list-inside mt-2">
