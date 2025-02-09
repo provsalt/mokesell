@@ -42,6 +42,7 @@ const Login = () => {
           email: values.email,
           username: db.data.username,
           description: db.data.description,
+          exp: db.data.exp
         })
       }
       if (typeof localStorage === "undefined") return;
@@ -51,6 +52,7 @@ const Login = () => {
         email: values.email,
         username: db.data.username,
         description: db.data.description,
+        exp: db.data.exp
       }))
       push("/")
     })

@@ -15,7 +15,9 @@ export const usersTable = pgTable("users", {
   password: varchar({ length: 255 }).notNull(),
   description: text(),
   createdAt: timestamp().notNull().defaultNow(),
-  lastActive: timestamp(), // if we have time to add this into the chat page.
+  lastActive: timestamp().defaultNow(), // if we have time to add this into the chat page.
+  lastDailyReward: timestamp(),
+  balance: numeric({ precision: 10, scale: 2 }).default("0.00"),
 });
 
 export const categoriesTable = pgTable("categories", {

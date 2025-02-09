@@ -104,9 +104,10 @@ export default function Home() {
       <div className="space-y-4">
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-semibold">Categories</h2>
-          <a href="#" className="text-blue-600 text-sm">
+          {/* Temporary. Redirect to /categories in the future*/}
+          <Link href="/listings" className="text-blue-600 text-sm">
             See all categories &gt;
-          </a>
+          </Link>
         </div>
         <div className="grid grid-cols-3 md:grid-cols-8 gap-2 md:gap-6 rounded-2xl">
           {hardCodedCategories.map((cat, i) => (
@@ -126,9 +127,9 @@ export default function Home() {
         <div className="space-y-2">
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-semibold">For You</h2>
-            <a href="#" className="text-blue-600 text-sm">
+            <Link href={`/listings`} className="text-blue-600 text-sm">
               See all &gt;
-            </a>
+            </Link>
           </div>
           <div className="flex gap-4 overflow-x-auto pb-2">
             {categories
@@ -148,7 +149,7 @@ export default function Home() {
               ))}
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-7 gap-6">
           {loading
             ? [...Array(10)].map((_, i) => <ListingCard key={i} />)
             : filteredItems.map((item) => (
@@ -174,14 +175,14 @@ export default function Home() {
       <div className="space-y-4">
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-semibold">New listings</h2>
-          <a href="#" className="text-blue-600 text-sm">
+          <Link href="/listings?" className="text-blue-600 text-sm">
             See all &gt;
-          </a>
+          </Link>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-7 gap-6">
           {loading
             ? [...Array(10)].map((_, i) => <ListingCard key={i} />)
-            : data.slice(0, 5).map((item) => (
+            : data.slice(0, 7).map((item) => (
                 <motion.div
                   key={item.id}
                   initial="hidden"
