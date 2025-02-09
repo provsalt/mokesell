@@ -1,38 +1,62 @@
 // using client here since the full form requires mostly client side interactions
 "use client";
-import {createListingSchema} from "@/lib/schemas";
-import {useForm} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
-import {Button} from "@/components/ui/button";
-import {Input} from "@/components/ui/input";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import {Textarea} from "@/components/ui/textarea";
-import {z} from "zod"
-import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
-import {cn} from "@/lib/utils";
-import {Check, ChevronsUpDown} from "lucide-react";
-import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from "@/components/ui/command";
+import { createListingSchema } from "@/lib/schemas";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { z } from "zod";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { Check, ChevronsUpDown } from "lucide-react";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import Image from "next/image";
-import {useEffect, useRef, useState} from "react";
-import {useToast} from "@/components/ui/use-toast";
-import {useRouter} from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
 type Category = {
-  id: number
-  name: string
-}
+  id: number;
+  name: string;
+};
 
 const formSchema = createListingSchema.extend({
-  categoryId: z.number().int().min(1, {message: "Invalid category"}),
-})
+  categoryId: z.number().int().min(1, { message: "Invalid category" }),
+});
 
 type Props = {
-  listing?: z.infer<typeof formSchema>,
-  categories: Category[]
-}
+  listing?: z.infer<typeof formSchema>;
+  categories: Category[];
+};
 
-export const ListingForm = ({listing, categories}: Props) => {
+export const ListingForm = ({ listing, categories }: Props) => {
   const defaultValues: z.infer<typeof formSchema> = {
     title: listing?.title || "",
     description: listing?.description || "",
@@ -40,22 +64,21 @@ export const ListingForm = ({listing, categories}: Props) => {
     condition: listing?.condition || "new",
     categoryId: listing?.categoryId || 0,
     deliveryCost: listing?.deliveryCost || undefined,
-    images: []
-  }
+    images: [],
+  };
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: defaultValues
-  })
+    defaultValues: defaultValues,
+  });
 
-  const [previews, setPreviews] = useState<string[]>([])
+  const [previews, setPreviews] = useState<string[]>([]);
 
   const { push } = useRouter();
 
-  const { toast } = useToast()
+  const { toast } = useToast();
 
   const submit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values)
     const formData = new FormData();
 
     formData.append("title", values.title);
@@ -83,7 +106,7 @@ export const ListingForm = ({listing, categories}: Props) => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error(errorData)
+        console.error(errorData);
         toast({
           variant: "destructive",
           title: "Failed to create listing",
@@ -93,14 +116,15 @@ export const ListingForm = ({listing, categories}: Props) => {
         });
       }
 
-      const data: {id: number} = (await response.json()).data;
+      const data: { id: number } = (await response.json()).data;
       console.log("Listing saved:", data);
       toast({
         title: "Listing created successfully!",
-        description: "Your listing has been saved. Redirecting you to your listing page.",
+        description:
+          "Your listing has been saved. Redirecting you to your listing page.",
       });
-      await new Promise(r => setTimeout(r, 2000));
-      push(`/listings/${data.id}`)
+      await new Promise((r) => setTimeout(r, 2000));
+      push(`/listings/${data.id}`);
     } catch (error) {
       console.error("Error posting listing:", error);
       if (error instanceof Error) {
@@ -111,7 +135,7 @@ export const ListingForm = ({listing, categories}: Props) => {
         });
       }
     }
-  }
+  };
 
   const triggerRef = useRef<HTMLButtonElement>(null);
   const [width, setWidth] = useState<number | null>(null);
@@ -124,9 +148,9 @@ export const ListingForm = ({listing, categories}: Props) => {
 
   useEffect(() => {
     return () => {
-      previews.forEach(url => URL.revokeObjectURL(url))
-    }
-  }, [previews])
+      previews.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [previews]);
 
   useEffect(() => {
     if (triggerRef.current) {
@@ -137,17 +161,27 @@ export const ListingForm = ({listing, categories}: Props) => {
   return (
     <div className="flex flex-1">
       <Form {...form}>
-        <form className="flex flex-1 flex-col gap-4" autoComplete="off" onSubmit={form.handleSubmit(submit)}>
-          <FormField render={({field}) => (
-            <FormItem>
-              <FormLabel>Title</FormLabel>
-              <FormControl>
-
-                <Input placeholder="Enter a nice name for your listing" {...field} className="flex-1"/>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )} name="title"/>
+        <form
+          className="flex flex-1 flex-col gap-4"
+          autoComplete="off"
+          onSubmit={form.handleSubmit(submit)}
+        >
+          <FormField
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Title</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Enter a nice name for your listing"
+                    {...field}
+                    className="flex-1"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+            name="title"
+          />
 
           <FormField
             control={form.control}
@@ -161,10 +195,12 @@ export const ListingForm = ({listing, categories}: Props) => {
                     multiple
                     accept="image/*"
                     onChange={(e) => {
-                      const files = Array.from(e.target.files || [])
-                      field.onChange(files)
-                      const urls = files.map(file => URL.createObjectURL(file))
-                      setPreviews(urls)
+                      const files = Array.from(e.target.files || []);
+                      field.onChange(files);
+                      const urls = files.map((file) =>
+                        URL.createObjectURL(file),
+                      );
+                      setPreviews(urls);
                     }}
                   />
                 </FormControl>
@@ -264,10 +300,13 @@ export const ListingForm = ({listing, categories}: Props) => {
               render={({ field }) => (
                 <FormItem className="flex-1">
                   <FormLabel>Condition</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select the item's condition"/>
+                        <SelectValue placeholder="Select the item's condition" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -297,19 +336,21 @@ export const ListingForm = ({listing, categories}: Props) => {
                           role="combobox"
                           className={cn(
                             "justify-between",
-                            !field.value && "text-muted-foreground"
+                            !field.value && "text-muted-foreground",
                           )}
                         >
                           {field.value
-                            ? categories.find(
-                              (cat) => cat.id === field.value
-                            )?.name
+                            ? categories.find((cat) => cat.id === field.value)
+                                ?.name
                             : "Select Category"}
                           <ChevronsUpDown className="opacity-50" />
                         </Button>
                       </FormControl>
                     </PopoverTrigger>
-                    <PopoverContent className="w-full p-0" style={{width: width ? width : undefined}}>
+                    <PopoverContent
+                      className="w-full p-0"
+                      style={{ width: width ? width : undefined }}
+                    >
                       <Command>
                         <CommandInput
                           placeholder="Search category..."
@@ -323,7 +364,7 @@ export const ListingForm = ({listing, categories}: Props) => {
                                 value={category.name}
                                 key={category.id}
                                 onSelect={() => {
-                                  form.setValue("categoryId", category.id)
+                                  form.setValue("categoryId", category.id);
                                 }}
                               >
                                 {category.name}
@@ -332,7 +373,7 @@ export const ListingForm = ({listing, categories}: Props) => {
                                     "ml-auto",
                                     category.id === field.value
                                       ? "opacity-100"
-                                      : "opacity-0"
+                                      : "opacity-0",
                                   )}
                                 />
                               </CommandItem>
@@ -344,12 +385,15 @@ export const ListingForm = ({listing, categories}: Props) => {
                   </Popover>
                   <FormMessage />
                 </FormItem>
-                )} />
+              )}
+            />
           </div>
 
-          <Button type="submit" className="bg-blue-500 hover:bg-blue-600">Submit</Button>
+          <Button type="submit" className="bg-blue-500 hover:bg-blue-600">
+            Submit
+          </Button>
         </form>
       </Form>
     </div>
-  )
-}
+  );
+};

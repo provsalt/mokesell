@@ -9,14 +9,12 @@ import {
   usersTable,
 } from "@/db/schema";
 import { desc, eq, sql } from "drizzle-orm";
-import { createAvatar } from "@dicebear/core";
-import { pixelArt } from "@dicebear/collection";
-import Image from "next/image";
 import { addDays, formatDistance, isBefore } from "date-fns";
 import { Mail, Star, Wallet } from "lucide-react";
 import { ListingCard } from "@/components/Listing/ListingCard";
 import { ClaimDailyRewardButton } from "@/components/Reward/ClaimDailyRewardButton";
 import { Button } from "@/components/ui/button";
+import { Avatar } from "@/components/Avatar/Avatar";
 
 export const revalidate = 300;
 
@@ -47,10 +45,6 @@ const ProfilePage = async () => {
     .leftJoin(imagesTable, eq(listingsTable.id, imagesTable.listingId))
     .groupBy(listingsTable.id, categoriesTable.name)
     .orderBy(desc(listingsTable.listedAt));
-  const avatar = createAvatar(pixelArt, {
-    size: 64,
-    seed: profile.username,
-  }).toDataUri();
 
   const canClaimDailyReward =
     profile.lastDailyReward === null ||
@@ -58,13 +52,7 @@ const ProfilePage = async () => {
   return (
     <div className="p-4 space-y-4">
       <div className="bg-gray-100 p-4 flex flex-col md:flex-row items-center gap-4 md:gap-8">
-        <Image
-          src={avatar}
-          alt={profile.username}
-          width={128}
-          height={128}
-          className="rounded-full bg-white"
-        />
+        <Avatar username={profile.username} size={128} />
         <div className="space-y-2">
           <div className="space-y-1">
             <h1 className="text-3xl font-bold">{profile.name}</h1>

@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   title: "Mokesell",
 };
 
+export const revalidate = 60;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -16,16 +18,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="flex flex-col min-h-screen">
+      <body>
         <UserProvider>
-          <div className="sticky top-0 z-40 dark:bg-gray-950 dark:text-gray-50 bg-gray-50 text-gray-950 drop-shadow-md">
-            <Navbar />
+          <div className="flex flex-col min-h-screen">
+            <div className="sticky top-0 z-40 dark:bg-gray-950 dark:text-gray-50 bg-gray-50 text-gray-950 drop-shadow-md">
+              <Navbar />
+            </div>
+            <main className="flex flex-1 flex-col dark:bg-gray-950 dark:text-gray-50 bg-gray-50 text-gray-950 ">
+              {children}
+            </main>
+            <Toaster />
           </div>
-          <main className="flex flex-1 flex-col dark:bg-gray-950 dark:text-gray-50 bg-gray-50 text-gray-950 ">
-            {children}
-          </main>
           <Footer />
-          <Toaster />
         </UserProvider>
       </body>
     </html>
