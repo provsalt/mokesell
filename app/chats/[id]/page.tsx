@@ -32,7 +32,7 @@ const Chat = async ({ params }: { params: Promise<{ id: string }> }) => {
   const conversation = conversationResult[0];
 
   if (
-    conversation.buyerUsername !== user.username ||
+    conversation.buyerUsername !== user.username &&
     conversation.sellerUsername !== user.username
   ) {
     redirect("/not_found") 
