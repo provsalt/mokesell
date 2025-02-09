@@ -2,19 +2,18 @@
 
 import { db } from "@/db";
 import { conversationTable, imagesTable, listingsTable, messagesTable } from "@/db/schema";
-import { desc, eq, sql } from "drizzle-orm";
-import { ChatMessages } from "@/components/Chat/ChatMessages"
+import {eq, sql } from "drizzle-orm";
 import { ChatHeader } from "@/components/Chat/ChatHeader"
-import { ChatInput } from "@/components/Chat/ChatInput";
 import { getJWTUser } from "@/lib/auth";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import {ChatContent} from "@/components/Chat/ChatContent";
 
 const Chat = async ({ params }: { params: Promise<{ id: string }> }) => {
   const user = await getJWTUser(await cookies());
   if (!user) redirect("/login");
 
-
+  // using server here to fetch db first for faster user experience.
   const conversationResult = await db
     .select({
       id: conversationTable.id,
@@ -50,7 +49,6 @@ const Chat = async ({ params }: { params: Promise<{ id: string }> }) => {
     .leftJoin(conversationTable, eq(messagesTable.conversationId, conversationTable.id))
     .leftJoin(listingsTable, eq(conversationTable.listingId, listingsTable.id))
     .where(eq(messagesTable.conversationId, Number((await params).id)))
-    .orderBy(desc(messagesTable.sentAt));
 
   const [listing] = await db
     .select({
@@ -74,8 +72,7 @@ const Chat = async ({ params }: { params: Promise<{ id: string }> }) => {
   return (
     <div className="flex-1 flex flex-col">
       <ChatHeader listingTitle={listing.title} listingImage={image[0].url ?? ""} />
-      <ChatMessages currentUsername={user.username} messages={messages} />
-      <ChatInput />
+      <ChatContent user={user} messages={messages} conversationId={(await params).id} />
     </div>
   )
 

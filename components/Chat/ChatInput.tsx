@@ -5,21 +5,17 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SendHorizontal } from "lucide-react";
 
-export const ChatInput: React.FC = () => {
+export const ChatInput = (props: {
+  onSend: (messageContent: string) => void;
+}) => {
   const [messageInput, setMessageInput] = useState("");
 
   const sendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (!messageInput.trim()) return;
+    props.onSend(messageInput);
     console.log("Message sent:", messageInput);
     setMessageInput("");
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage(e);
-    }
   };
 
   return (
@@ -29,7 +25,6 @@ export const ChatInput: React.FC = () => {
           type="text"
           value={messageInput}
           onChange={(e) => setMessageInput(e.target.value)}
-          onKeyPress={handleKeyPress}
           placeholder="Type a message..."
           className="w-full pl-4 pr-12 py-3 rounded-lg border"
         />

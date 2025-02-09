@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { db } from "@/db";
 import { messagesTable, conversationTable } from "@/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { getJWTUser } from "@/lib/auth";
@@ -233,8 +233,7 @@ export const GET = async (request: Request) => {
       .from(messagesTable)
       .where(eq(messagesTable.conversationId, Number(conversationId)))
       .limit(limit)
-      .offset(offset)
-      .orderBy(desc(messagesTable.sentAt));
+      .offset(offset);
 
     return NextResponse.json({ data: messages }, { status: 200 });
   } catch (error) {
