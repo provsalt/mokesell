@@ -1,14 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { LogOut, Menu, MessageCircle, Search, User } from "lucide-react";
-import { useContext, useEffect, useState } from "react";
-import { UserContext } from "@/providers/UserProvider";
-import { Input } from "@/components/ui/input";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Logo from "@/public/mokesell.png";
+import { Button } from "@/components/ui/button";
+import { LogOut, Menu, MessageCircle, User } from "lucide-react";
+import { useContext, useEffect, useState } from "react";
+import { UserContext } from "@/providers/UserProvider";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,11 +15,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import SearchBar from "@/components/Navbar/Searchbar";
 
 export const Navbar = () => {
   const [user, setUser] = useContext(UserContext);
-  const [searchQuery, setSearchQuery] = useState("");
-
   const logout = () => {
     if (setUser) {
       setUser(undefined);
@@ -30,6 +27,7 @@ export const Navbar = () => {
       fetch("/api/logout").then();
     }
   };
+
   const [width, setWidth] = useState<number>(
     typeof window === "undefined" ? 0 : window.innerWidth,
   );
@@ -39,39 +37,10 @@ export const Navbar = () => {
     setWidth(window.innerWidth);
   };
 
-  const { push } = useRouter();
-
-  const search = () => {
-    if (!searchQuery) return;
-    push("/listings?" + new URLSearchParams({ query: searchQuery }).toString());
-  };
-
   useEffect(() => {
     window.addEventListener("resize", handleWindowSizeChange);
-    return () => {
-      window.removeEventListener("resize", handleWindowSizeChange);
-    };
+    return () => window.removeEventListener("resize", handleWindowSizeChange);
   }, []);
-
-  const SearchBar = () => {
-    return (
-      <form onSubmit={search} className="flex">
-        <Input
-          className="min-w-[25vw]"
-          onInput={(e) => {
-            const target = e.target as HTMLInputElement;
-            setSearchQuery(target.value);
-          }}
-          autoComplete="off"
-          value={searchQuery}
-          placeholder="Search"
-        />
-        <Button type="submit">
-          <Search />
-        </Button>
-      </form>
-    );
-  };
 
   if (user) {
     return (
@@ -89,7 +58,7 @@ export const Navbar = () => {
                   <Link href="/sell">Sell</Link>
                 </Button>
                 <DropdownMenu>
-                  <DropdownMenuTrigger className="bg-gray-950 rounded-md text-gray-50 inline-flex items-center justify-center gap-2 whitespace-nowrap px-4 py-2 text-sm font-medium ">
+                  <DropdownMenuTrigger className="bg-gray-950 rounded-md text-gray-50 inline-flex items-center justify-center gap-2 whitespace-nowrap px-4 py-2 text-sm font-medium">
                     Games
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
@@ -139,7 +108,6 @@ export const Navbar = () => {
                 <Link href="/games/coinflip">
                   <DropdownMenuItem>Mokeflip</DropdownMenuItem>
                 </Link>
-
                 <DropdownMenuItem
                   onClick={logout}
                   className="dark:bg-transparent"
@@ -155,6 +123,7 @@ export const Navbar = () => {
       </nav>
     );
   }
+
   return (
     <nav className="flex p-4 flex-col">
       <div className="flex py-4 md:py-2 items-center justify-between text-lg">
@@ -162,7 +131,6 @@ export const Navbar = () => {
           <Image src={Logo} alt="Mokesell logo" width={64} height={64} />
           <span className="font-bold text-lg">Mokesell</span>
         </Link>
-
         {width >= 768 && <SearchBar />}
         <div className="flex gap-4">
           <Link href="/signup">
