@@ -12,7 +12,7 @@ const SearchBar = () => {
 
   const search = (e: FormEvent) => {
     e.preventDefault();
-    if (!searchQuery) return;
+    // if (!searchQuery) return;
     push("/listings?" + new URLSearchParams({ query: searchQuery }).toString());
   };
 
