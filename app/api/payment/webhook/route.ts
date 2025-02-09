@@ -1,8 +1,6 @@
 import Stripe from "stripe";
 import { db } from "@/db";
 import { usersTable } from "@/db/schema";
-import { getJWTUser } from "@/lib/auth";
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
@@ -10,9 +8,6 @@ import { revalidatePath } from "next/cache";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
 export const POST = async (req: Request) => {
-  const user = await getJWTUser(await cookies());
-  if (!user) return new Response(null, { status: 403 });
-
   const requestText = await req.text();
   const sig = req.headers.get("stripe-signature");
   const signingSecret = process.env.STRIPE_WEBHOOK_SECRET as string;
@@ -26,16 +21,17 @@ export const POST = async (req: Request) => {
   switch (event.type) {
     case "payment_intent.succeeded":
       const paymentIntent = event.data.object as Stripe.PaymentIntent;
-      db.update(usersTable)
+      const user = paymentIntent.metadata?.username;
+      await db
+        .update(usersTable)
         .set({
           balance: sql`${usersTable.balance} + ${paymentIntent.amount / 100}`,
         })
-        .where(eq(usersTable.username, user.username));
+        .where(eq(usersTable.username, user));
       revalidatePath("/", "layout");
-      break;
+      return NextResponse.json({ received: true });
     default:
       console.log(event);
+      return new Response(null, { status: 500 });
   }
-
-  NextResponse.json({ received: true });
 };

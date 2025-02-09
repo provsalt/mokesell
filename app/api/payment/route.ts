@@ -75,6 +75,9 @@ export const POST = async (request: Request) => {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amount * 100, // convert dollars to cents
       currency,
+      metadata: {
+        username: user.username,
+      },
     });
 
     return new Response(
