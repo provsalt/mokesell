@@ -14,7 +14,7 @@ interface User {
   name: string;
   email: string;
   description: string; // bio in profile
-  exp: number
+  exp: number;
 }
 
 export const UserContext = createContext<
@@ -30,8 +30,8 @@ export const UserProvider = (props: { children: ReactNode }) => {
       if (userData) {
         const parsed = JSON.parse(userData);
         if (!parsed.exp || Date.now() > parsed.exp) {
-          setUser(undefined)
-          return
+          setUser(undefined);
+          return;
         }
         setUser(parsed);
       } else {
