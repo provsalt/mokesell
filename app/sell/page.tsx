@@ -2,6 +2,7 @@ import { ListingForm } from "@/components/Listing/ListingForm";
 import { cookies } from "next/headers";
 import { getJWTUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { location } from "@/lib/utils";
 
 const SellPage = async () => {
   const auth = await getJWTUser(await cookies());
