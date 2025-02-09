@@ -15,6 +15,7 @@ import { ListingCard } from "@/components/Listing/ListingCard";
 import { ClaimDailyRewardButton } from "@/components/Reward/ClaimDailyRewardButton";
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/Avatar/Avatar";
+import { PaymentDialog } from "@/components/Payments/PaymentDialog";
 
 export const revalidate = 300;
 
@@ -88,19 +89,23 @@ const ProfilePage = async () => {
                 <p>${profile.balance}</p>
               </div>
             </div>
-            {canClaimDailyReward ? (
-              <ClaimDailyRewardButton />
-            ) : (
-              profile.lastDailyReward && (
-                <Button disabled>
-                  Daily Reward in{" "}
-                  {formatDistance(
-                    addDays(profile.lastDailyReward, 1),
-                    new Date(),
-                  )}
-                </Button>
-              )
-            )}
+            <div className="space-x-2">
+              {canClaimDailyReward ? (
+                <ClaimDailyRewardButton />
+              ) : (
+                profile.lastDailyReward && (
+                  <Button disabled>
+                    Daily Reward in{" "}
+                    {formatDistance(
+                      addDays(profile.lastDailyReward, 1),
+                      new Date(),
+                    )}
+                  </Button>
+                )
+              )}
+
+              <PaymentDialog />
+            </div>
           </div>
         </div>
       </div>
